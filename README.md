@@ -1,5 +1,11 @@
 # QueryClustering
 
+## Setup
 
-### Mongodb 
-https://www.mongodb.com/blog/post/getting-started-with-python-and-mongodb
+To set up, please install the following:
+
+`pip3 install configparser`
+
+`pip3 install pymongo`
+
+`pip3 install pymysql`
