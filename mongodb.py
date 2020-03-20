@@ -5,7 +5,7 @@ import configparser
 config = configparser.ConfigParser()
 config.read("config.ini")
 
-
+# connects to mongo client
 client = MongoClient(config.get("Database", "mongo"))
 
 db = client.sample_airbnb
