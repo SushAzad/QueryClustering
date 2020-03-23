@@ -73,6 +73,17 @@ limitations under the License.
             </li>
         {% endfor %}
     </ul>
+    <h4 class="header center">Recent Queries</h4>
+    <ul class="container collection center">
+        {% for query in recent_queries %}
+            <li class="collection-item avatar">
+                <span class="title">
+                    Query ID <b>{{query.queryid}}</b>
+                </span>
+                <p>with wording {{query.query_syntax}}</p>
+            </li>
+        {% endfor %}
+    </ul>
 </div>
 <script>
     function vote(team) {

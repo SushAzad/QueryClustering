@@ -89,6 +89,7 @@ def create_tables():
 @app.route("/", methods=["GET"])
 def index():
     votes = []
+    queries = []
     with db.connect() as conn:
         # Execute the query and fetch all results
         recent_votes = conn.execute(
@@ -97,7 +98,9 @@ def index():
         # Convert the results into a list of dicts representing votes
         for row in recent_votes:
             votes.append({"candidate": row[0], "time_cast": row[1]})
-
+        recent_queries = conn.execute("SELECT queryid, query FROM hw1 ORDER BY queryid DESC LIMIT 5").fetchall()
+        for query in recent_queries:
+            queries.append({"query_id":query[0], "query_syntax":query[1]})
         stmt = sqlalchemy.text(
             "SELECT COUNT(vote_id) FROM votes WHERE candidate=:candidate"
         )
@@ -109,7 +112,7 @@ def index():
         space_count = space_result[0]
 
     return render_template(
-        "index.html", recent_votes=votes, tab_count=tab_count, space_count=space_count
+        "index.html", recent_votes=votes, tab_count=tab_count, space_count=space_count, recent_queries = queries
     )
 
 
