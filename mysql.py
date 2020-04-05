@@ -1,6 +1,11 @@
 import pymysql
 import configparser
 
+# print cursor function
+def pc(cursor):
+	for x in cursor:
+		print(x)
+
 # reads the config file
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -14,5 +19,6 @@ mycursor = conn.cursor()
 
 mycursor.execute("SHOW DATABASES")
 
-for x in mycursor:
-	print(x)
+pc(mycursor)
+
+# conn.commit()
