@@ -4,7 +4,7 @@ import configparser
 class MySQLDB:
 
 	# Creates initial DB connection
-	def __init__(self):
+	def __init__(self, dbname):
 		# reads the config file	
 		config = configparser.ConfigParser()
 		config.read("config.ini")
@@ -16,7 +16,8 @@ class MySQLDB:
 
 		self.mycursor = self.conn.cursor()
 		# currently using `SampleQueries` database; can change if we make new one
-		self.mycursor.execute("USE SampleQueries")
+		sql = "USE %s" % dbname
+		self.mycursor.execute(sql)
 
 	# Creates a new query record
 	def create_query(self, question, query):
