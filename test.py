@@ -1,6 +1,6 @@
 import crud_operations as co
 
-db = co.MySQLDB()
+db = co.MySQLDB("SampleQueries")
 
 # db.create_query(1, 'this is a test insert')
 print("Before Insert")
