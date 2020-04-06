@@ -1,5 +1,6 @@
 import csv
 import crud_operations as co
+import sys
 
 def qPrint(query):
     print(query[0] + "\t" + query[2] + "\t" + query[1])
@@ -25,14 +26,19 @@ def getQueries(filename):
 	return queries
 
 # Get the queries from CSV
-toInsert = getQueries('sql_queries.tsv')
+if (len(sys.argv) < 2):
+	print("Please input a file to use i.e. python csv_to_db.py [file]")
+else:
+	filename = sys.argv[1]
+	# we currently have sql_queries.tsv
+	toInsert = getQueries(filename)
 
-# Create db object for querying (insert into SampleQueries db)
-db = co.MySQLDB("SampleQueries")
+	# Create db object for querying (insert into SampleQueries db)
+	db = co.MySQLDB("SampleQueries")
 
-# Insert all entries in toInsert
-for entry in toInsert:
-	db.create_query(entry[2], entry[1])
+	# Insert all entries in toInsert
+	for entry in toInsert:
+		db.create_query(entry[2], entry[1])
 
-print("Inserted queries into db")
+	print("Inserted queries into db")
 
