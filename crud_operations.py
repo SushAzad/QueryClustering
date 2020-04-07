@@ -62,26 +62,48 @@ class MySQLDB:
 		return result
 
 	# updates a particular query by id
-	def update_query_by_id(self, queryid):
-		pass
+	def update_query_by_id(self, queryid, query):
+		sql = "UPDATE `hw1` SET `query`=%s WHERE `queryid`=%s"
+		self.mycursor.execute(sql, (query, queryid))
+		result = self.mycursor.fetchall()
+		return result
 
 	# updates all the queries for one question
-	def update_all_queries(self, questionid):
-		pass
+	def update_all_queries(self, questionid, query):
+		sql = "UPDATE `hw1` SET `query`=%s WHERE `questionid`=%s"
+		self.mycursor.execute(sql, (query, questionid))
+		self.conn.commit()
+		print("Updated hw1 for questionID= ", questionid)
+		return()
 
 	# updates a particular question by id
-	def update_question_by_id(self, questionid):
-		pass
+	def update_question_by_id(self, questionid, question):
+		sql = "UPDATE `Questions` SET `question`=%s WHERE `questionid`=%s"
+		self.mycursor.execute(sql, (question, questionid))
+		self.conn.commit()
+		print("Updated Questions for questionID= ", questionid)
+		return
 
 	# deletes a particular question by id
 	def delete_question_by_id(self, questionid):
-		pass
+		sql = "DELETE FROM `Questions` WHERE `questionid`=%s"
+		self.mycursor.execute(sql, (questionid))
+		self.conn.commit()
+		print("Deleted from Questions for questionID= ", questionid)
+		return 
 
 	# deletes a particular query by id
 	def delete_query_by_id(self, queryid):
-		pass
+		sql = "DELETE FROM `hw1` WHERE `queryid`=%s"
+		self.mycursor.execute(sql, (queryid))
+		self.conn.commit()
+		print("Deleted from hw1 for queryid= ", queryid)
+		return
 
 	# deletes all queries for one questionid (i.e. if we delete a question for example)
 	def delete_all_queries(self, questionid):
-		pass
-
+		sql = "DELETE FROM `hw1` WHERE `questionid`=%s"
+		self.mycursor.execute(sql, (questionid))
+		self.conn.commit()
+		print("Deleted All queries in hw1 for questionID= ", questionid)
+		return
