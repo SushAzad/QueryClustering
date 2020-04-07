@@ -12,8 +12,8 @@ To set up, please install the following:
 
 ## Todo 
 
-- [ ] Schedule Demo--Sush 
-- [ ] CRUD scripts--Heather (CR) and Sush (UD) 
-- [ ] Retrieve keywords--Jiaqi 
-- [ ] Summarize 04/04 meeting notes--Jiaqi
+- [x] Schedule Demo--Sush 
+- [x] CRUD scripts--Heather (CR) and Sush (UD) 
+- [x] Retrieve keywords--Jiaqi 
+- [x] Summarize 04/04 meeting notes--Jiaqi
 - [ ] Meet with Abdu to finalize criteria--Sush (what would he want queries to be clustered by?)
