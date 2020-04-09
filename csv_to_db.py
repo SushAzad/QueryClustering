@@ -9,13 +9,14 @@ def getQueries(filename):
 	queries = []
 	qCounter = 0
 	with open(filename) as tsv:
-	    reader = csv.reader(tsv, delimiter='\t')
+	    reader = csv.reader(tsv, delimiter=',')
 	    for idx, row in enumerate(reader):
 	        if idx != 0:
-	            # questionId, queryContent, queryId
+	            # queryID, variantID, queryText
 	            entry = []
 	            entry.append(row[0])
 	            entry.append(row[1])
+	            entry.append(row[2])
 	            entry.append(str(qCounter))
 	            qCounter += 1
 	            queries.append(entry)
@@ -34,11 +35,11 @@ else:
 	toInsert = getQueries(filename)
 
 	# Create db object for querying (insert into SampleQueries db)
-	db = co.MySQLDB("SampleQueries")
+	db = co.MySQLDB("pl_queries")
 
 	# Insert all entries in toInsert
 	for entry in toInsert:
-		db.create_query(entry[2], entry[1])
+		db.create_query_Queries(entry[0], entry[1], entry[2])
 
 	print("Inserted queries into db")
 
