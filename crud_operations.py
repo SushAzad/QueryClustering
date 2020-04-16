@@ -26,6 +26,12 @@ class MySQLDB:
 		self.conn.commit()
 		print("Inserted \"" + query + "\" for question " + str(question))
 
+	def create_query_Queries(self, queryID, vID, qText):
+		sql = "INSERT INTO `Queries` (`queryID`, `VariantID`, `QueryText`) VALUES (%s, %s, %s)"
+		self.mycursor.execute(sql, (queryID, vID, qText))
+		self.conn.commit()
+		print("Inserted \"" + queryID + "\" for question " + str(vID))
+
 	def create_question(self, content):
 		sql = "INSERT INTO `Questions` (`question`) VALUES (%s)"
 		self.mycursor.execute(sql, (content))
