@@ -17,7 +17,7 @@ To set up, please install the following:
 - [x] Retrieve keywords--Jiaqi 
 - [x] Summarize 04/04 meeting notes--Jiaqi
 - [x] Meet with Abdu to finalize criteria--Sush (what would he want queries to be clustered by?)
-- [ ] Get embeddings for raw data and keywords (Sush)
+- [x] Get embeddings for raw data and keywords (Sush)
 - [ ] Cluster raw data vs. keywords (Jiaqi)
 - [ ] Implement parsing/getting additional features 
 - [ ] Create MongoDB to store features (Heather)
@@ -29,6 +29,26 @@ To set up, please install the following:
 - [ ] Display queries and clusters on front end 
 
 #### Database 
+About the Database:
+Use the 'pl_queries' database, table name Queries.
+Schema:
++-----------+---------+------+-----+---------+----------------+
+| Field     | Type    | Null | Key | Default | Extra          |
++-----------+---------+------+-----+---------+----------------+
+| queryNum  | int(11) | NO   | PRI | NULL    | auto_increment |
+| queryID   | int(11) | NO   |     | NULL    |                |
+| variantID | int(11) | NO   |     | NULL    |                |
+| queryText | text    | YES  |     | NULL    |                |
++-----------+---------+------+-----+---------+----------------+
+
+- queryNum: Just an auto-incremementing primary key. Has no cool info.
+- queryID: Unique query ID which corresponds to (queryID from) PrairieLearn. In the form of 5 digit random number.
+- variantID: ID to uniquely identify the question variant. It appears there were multiple variants per question in Fall 2019, so we can treat variantID as a question ID to cluster by.
+-queryText: Raw untokenized text of the students SQL query.
+
+When tokenizing queryText, make sure to save the tokenized text against the same queryID so we can retrieve the original later.
+
+TO-DO:
 - [ ] Foreign key constraints (questionId, cascade/update on delete)
 
 #### Analyzing queries 
