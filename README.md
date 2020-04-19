@@ -35,12 +35,26 @@ Schema:
 - queryNum (int): Auto-incremementing primary key. Has no cool info.
 - queryID (int): Unique query ID which corresponds to (queryID from) PrairieLearn. In the form of 5 digit random number.
 - variantID (int): ID to uniquely identify the question variant. It appears there were multiple variants per question in Fall 2019, so we can treat variantID as a question ID to cluster by.
--queryText (text): Raw untokenized text of the students SQL query.
+- queryText (text): Raw untokenized text of the students SQL query.
 
 When tokenizing queryText, make sure to save the tokenized text against the same queryID so we can retrieve the original later.
 
 TO-DO:
 - [ ] Foreign key constraints (questionId, cascade/update on delete)
+#### Getting Embeddings:
+
+The file call the file createEmbeddings.py in the following way:
+
+python createEmbeddings.py [path+filename] [boolean]
+
+- The file should consist of a csv file with 2 columns - queryID (corresponding to pl_queries.Queries) & queryText. If you want to use the raw queries, we can pass in './data/fa19_queries.csv', which has all the records from fa19 pulled from the Queries table. These queries are not tokenized already, so pass 'False' for the boolean, and it will nltk tonize it ebfore creating embeddings.
+	- Eg usage: python createEmbeddings.py ./data/fa19_queries.csv False
+
+- If the queries have been tokenized in some other way, store those queries in a csv file, with the queryID column corresponding  to the queryID of the record in the database. pass 'True' for the boolean in this case, so no further tokenization is done.
+	- Eg usage: python createEmbeddings.py ./data/your_file.csv True
+	
+The embeddings will be stored in a pickle file called 'NewQueryEmbeddings'. When read into a dictionary, the keys will be the QueryIDs from the given csv file, and its value will be the document embeddings generated for that query.
+
 
 #### Analyzing queries 
 - [ ] Distinguish variable names vs. keywords
