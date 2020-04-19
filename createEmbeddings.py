@@ -78,13 +78,16 @@ def createWordEmb(df, isTokenized=False):
     n.write(str(new))
     return qModel
 
-if (len(sys.argv) < 2):
-	print("Please input a csv file to use i.e. python createEmbeddings.py [file], with queryText and queryID as cols")
+if (len(sys.argv) < 3):
+	print("Please input a csv file to use i.e. python createEmbeddings.py [file] [True/False]. File needs queryText and queryID as cols. True or False indicates pre-tokenized input")
 else:
     filename = sys.argv[1]
     df = pd.read_csv(filename)
+    preTok = False
+    if sys.argv[2] == "True" or sys.argv[2] == "true":
+        preTok = True
     # Pass True as parameter to both functions below if queryText in df is tokenized.
-    model = createWordEmb(df)
-    doc_emb_list, doc_emb_dict = get_document_embeddings(df, model)
+    model = createWordEmb(df, preTok)
+    doc_emb_list, doc_emb_dict = get_document_embeddings(df, model, preTok)
     with open('NewQueryEmbeddings.pickle', 'wb') as handle:
         pickle.dump(doc_emb_dict, handle)
