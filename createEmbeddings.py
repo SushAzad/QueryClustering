@@ -9,6 +9,7 @@ import numpy as np
 import sys
 import pandas as pd
 import pickle
+import csv
 
 def tokenize(ql):
     returning = []
@@ -22,11 +23,12 @@ def get_document_embeddings(df, model, isTokenized = False):
     ids=df['queryID'].tolist()
     document_embeddings = []
     doc_emb = dict()
+    non_vocab = set()
     for i,document in enumerate(corpus):
         word_counts = {}
 #         document = document.decode('utf-8', 'ignore')
         if not isTokenized:
-            print("Since isToeknized parameter is not set, document is being tokenized by NLTK")
+            # print("Since isToeknized parameter is not set, document is being tokenized by NLTK")
             document = nltk.word_tokenize(document)
         for word in document:
             if word not in word_counts:
@@ -40,11 +42,12 @@ def get_document_embeddings(df, model, isTokenized = False):
                 this_document_embeddings += word_counts[word] * model.wv.__getitem__(word)
                 total_words += word_counts[word]
             except KeyError:
-                print (word, 'not in vocabulary')
+                non_vocab.add(word)
         this_document_embeddings /= total_words
         document_embeddings.append(this_document_embeddings)
         doc_emb[ids[i]]=this_document_embeddings
-    return document_embeddings, doc_emb
+    return document_embeddings, doc_emb, non_vocab
+
 
 def createWordEmb(df, isTokenized=False):
     queries =  df['queryText'].str.lower().tolist()
@@ -54,7 +57,7 @@ def createWordEmb(df, isTokenized=False):
     qModel = Word2Vec(queries, size=100, window=5, workers=12, negative=0, hs=1, sample=1e-3)
     qModel.save("word2vecQueries.model")
     qModel.wv.save_word2vec_format("QueriesNon-embedded.txt", binary=False)
-    print("Printing a random index2Word to check for garbage", qModel.wv.index2word[90])
+    print("Printing a random index2Word to check for garbage:", qModel.wv.index2word[90])
     phrasal = open("QueriesNon-embedded.txt", "r")
     vocab = []
     embeddings = []
@@ -67,7 +70,7 @@ def createWordEmb(df, isTokenized=False):
             embeddings.append(qModel.wv.vectors[idx])
             for vector in qModel.wv.vectors[idx]:
                 sentence += str(vector) + " "
-            tup = (word, model.wv.vectors[idx])
+            tup = (word, qModel.wv.vectors[idx])
             both.append(tup)
             new.append(sentence)
     m = open("FA19QueryEmbeddings.txt", "w")
@@ -88,6 +91,13 @@ else:
         preTok = True
     # Pass True as parameter to both functions below if queryText in df is tokenized.
     model = createWordEmb(df, preTok)
-    doc_emb_list, doc_emb_dict = get_document_embeddings(df, model, preTok)
+    doc_emb_list, doc_emb_dict, non_vocab = get_document_embeddings(df, model, preTok)
     with open('NewQueryEmbeddings.pickle', 'wb') as handle:
         pickle.dump(doc_emb_dict, handle)
+
+    with open('data/non_vocab_words.csv', 'w') as outfile:
+        writer = csv.writer(outfile)
+        for row in list(non_vocab):
+            writer.writerow(row)
+
+    print("Embeddings have been written to NewQueryEmbeddings.pickle! All words that were not found in the vocabulary have been recorded in non_vocab_words.csv")
