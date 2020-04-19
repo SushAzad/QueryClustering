@@ -32,19 +32,10 @@ To set up, please install the following:
 About the Database:
 Use the 'pl_queries' database, table name Queries.
 Schema:
-+-----------+---------+------+-----+---------+----------------+
-| Field     | Type    | Null | Key | Default | Extra          |
-+-----------+---------+------+-----+---------+----------------+
-| queryNum  | int(11) | NO   | PRI | NULL    | auto_increment |
-| queryID   | int(11) | NO   |     | NULL    |                |
-| variantID | int(11) | NO   |     | NULL    |                |
-| queryText | text    | YES  |     | NULL    |                |
-+-----------+---------+------+-----+---------+----------------+
-
-- queryNum: Just an auto-incremementing primary key. Has no cool info.
-- queryID: Unique query ID which corresponds to (queryID from) PrairieLearn. In the form of 5 digit random number.
-- variantID: ID to uniquely identify the question variant. It appears there were multiple variants per question in Fall 2019, so we can treat variantID as a question ID to cluster by.
--queryText: Raw untokenized text of the students SQL query.
+- queryNum (int): Auto-incremementing primary key. Has no cool info.
+- queryID (int): Unique query ID which corresponds to (queryID from) PrairieLearn. In the form of 5 digit random number.
+- variantID (int): ID to uniquely identify the question variant. It appears there were multiple variants per question in Fall 2019, so we can treat variantID as a question ID to cluster by.
+-queryText (text): Raw untokenized text of the students SQL query.
 
 When tokenizing queryText, make sure to save the tokenized text against the same queryID so we can retrieve the original later.
 
