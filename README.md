@@ -33,7 +33,7 @@ About the Database:
 Use the 'pl_queries' database, table name Queries.
 Schema:
 - queryNum (int): Auto-incremementing primary key. Has no cool info.
-- queryID (int): Unique query ID which corresponds to (queryID from) PrairieLearn. In the form of 5 digit random number.
+- queryID (int): Query ID which corresponds to (queryID from) PrairieLearn. In the form of 5 digit random number. Only have 212 of these for 1418 unique queries, so this might be a student ID???
 - variantID (int): ID to uniquely identify the question variant. It appears there were multiple variants per question in Fall 2019, so we can treat variantID as a question ID to cluster by.
 - queryText (text): Raw untokenized text of the students SQL query.
 
