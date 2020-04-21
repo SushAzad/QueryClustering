@@ -11,6 +11,31 @@ import pandas as pd
 import pickle
 import csv
 
+# get SQL keywords for embeddings
+keywords=set()
+with open('sql_reserved_words.csv') as words:
+    reader = csv.reader(words)
+    for row in reader:
+        keywords.add(row[0])
+
+def keywordize_query(query):
+    t = nltk.word_tokenize(query)
+    filtered=[]
+    dic={}
+    for w in t: 
+        word=w.upper()
+        if word in keywords:
+            filtered.append(word)
+            if word in dic:
+                dic[word]+=1
+            else:
+                dic[word]=1
+    
+    # can also return dic for a dictionary with wordcounts 
+    return filtered
+
+
+
 def tokenize(ql):
     returning = []
     for contents in ql:
