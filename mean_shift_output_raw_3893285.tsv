@@ -1,0 +1,1351 @@
+
+
+
+######################################################################
+# Cluster: 0         
+######################################################################
+
+3893285
+select A.ProductName, 
+(
+select count(B.ProductId) from Products B
+where B.YearReleased < A.YearReleased and A.BrandName=B.BrandName
+) as AB
+from Products A
+order by ProductName;
+
+
+3893285
+SELECT p.ProductName, (SELECT COUNT(ProductId) FROM Products prod WHERE p.YearReleased>prod.YearReleased AND p.BrandName = prod.BrandName)
+FROM (Products p)
+ORDER BY p.ProductName
+
+3893285
+SELECT A.ProductName, (COUNT(*) - 1)
+FROM Products A, Products B
+WHERE A.BrandName = B.BrandName AND (B.YearReleased < A.YearReleased OR B.ProductName = A.ProductName)
+GROUP BY A.ProductId
+ORDER BY A.ProductName
+
+3893285
+Select Prod.ProductName, (Select count(*) From Products Where Prod.BrandName = BrandName And Prod.YearReleased > YearReleased)
+From Products Prod
+Order by Prod.ProductName
+
+
+
+3893285
+SELECT ProductName, (SELECT Count(*) FROM Products b WHERE p.BrandName = b.BrandName and b.YearReleased < p.YearReleased)
+FROM Products p
+ORDER BY ProductName
+
+3893285
+Select g.name, count(g.p2id)-1
+from 
+    (
+        Select p2.ProductName as name, p1.ProductId as p1id, p2.ProductId as p2id
+        from Products p1, Products p2
+        WHERE (p1.BrandName=p2.BrandName AND p1.YearReleased < p2.YearReleased) or p1.ProductId = p2.ProductId
+    )as g
+group by g.p2id
+order by g.name ASC
+
+
+
+3893285
+SELECT p.ProductName as prodname, (SELECT COUNT(*) FROM Products p2 WHERE p.YearReleased > p2.YearReleased AND p.BrandName=p2.BrandName)
+FROM Products p
+ORDER BY prodname
+
+3893285
+SELECT P.ProductName, ( SELECT COUNT(*)
+                        FROM Products
+                        WHERE BrandName = P.BrandName AND
+                              YearReleased < P.YearReleased
+                      ) AS result
+FROM Products P
+ORDER BY P.ProductName;
+
+3893285
+Select Products.ProductName, Coalesce(counts,0)
+From Products Left Join (Select  p.ProductName, count(p.ProductName) as counts
+from Products p , Products a where p.BrandName = a.BrandName and  p.YearReleased > a.YearReleased
+Group By p.ProductName) as q on q.ProductName = Products.ProductName
+Order by Products.ProductName;
+
+3893285
+SELECT p.ProductName,
+(SELECT COUNT(*)
+FROM Products
+WHERE Brandname = p.Brandname
+AND YearReleased < p.YearReleased
+)
+FROM Products p
+ORDER BY p.ProductName
+
+3893285
+SELECT p.ProductName, (
+    SELECT COUNT(*)
+    FROM Products p2
+    WHERE p2.BrandName=p.BrandName
+    AND p2.YearReleased < p.YearReleased
+)
+FROM Products p
+ORDER BY p.ProductName;
+
+3893285
+SELECT Name1, Name2
+FROM (SELECT P.ProductName Name1, count(PP.ProductName) Name2
+    FROM Products P
+    LEFT JOIN Products PP  -- leftjoin+on 
+    ON P.YearReleased > PP.YearReleased AND P.BrandName = PP.BrandName
+    GROUP BY Name1) AS A
+
+
+3893285
+SELECT x.ProductName, (SELECT count(*) 
+FROM Products p
+WHERE p.BrandName = x.BrandName and p.YearReleased < x.YearReleased)
+FROM Products x
+ORDER by x.ProductName
+
+3893285
+select a.ProductName, count(b.YearReleased)
+from Products a left join Products b
+on a.YearReleased > b.YearReleased 
+and a.BrandName = b.BrandName
+Group by a.ProductName
+
+
+
+
+
+
+3893285
+Select Prod.ProductName, 
+(Select count(*) From Products Where Prod.BrandName = BrandName And Prod.YearReleased > YearReleased)
+From Products Prod
+Order by Prod.ProductName
+
+
+3893285
+SELECT Products.ProductName, (SELECT COUNT(*) FROM Products AS p WHERE p.YearReleased < Products.YearReleased AND p.BrandName = Products.BrandName)
+FROM Products
+ORDER BY Products.ProductName ASC;
+
+3893285
+SELECT p.ProductName, (SELECT COUNT(*)
+                    FROM Products
+                    WHERE Products.BrandName =
+                    p.BrandName AND Products.YearReleased < p.YearReleased)
+FROM Products p
+ORDER BY p.ProductName
+
+
+
+
+
+3893285
+SELECT pr.ProductName, COUNT(a.YearReleased)
+FROM Products pr LEFT OUTER JOIN 
+
+(
+SELECT p.ProductName , p.YearReleased
+FROM Products p JOIN Products p2 ON p.BrandName = p2.BrandName
+WHERE (p.YearReleased > p2.YearReleased) 
+) a ON pr.ProductName = a.ProductName
+
+GROUP BY pr.ProductName
+
+
+
+
+
+
+3893285
+SELECT ProductName, (SELECT COUNT(*) FROM Products inside WHERE inside.YearReleased < p1.YearReleased AND inside.BrandName = p1.BrandName)
+FROM Products p1
+ORDER BY Productname;
+
+3893285
+SELECT  B.ProductName, (count(A.ProductName)-1)
+FROM Products A JOIN Products B
+where (A.BrandName = B.BrandName) AND
+(A.YearReleased < B.YearReleased) OR (A.ProductName = B.ProductName)
+GROUP BY B.ProductName
+
+3893285
+SELECT Products.ProductName, IFNULL(numbers.freq, 0)
+FROM Products 
+LEFT JOIN (SELECT final.ProductName, COUNT(*) as freq
+FROM (
+SELECT Products.ProductName
+	FROM 
+		(SELECT Products.BrandName as bn1, Products.ProductName as pn1, Products.YearReleased as yr1, x.ProductName, x.YearReleased
+		FROM 
+			(SELECT * FROM Products) as x, Products
+		WHERE Products.YearReleased > x.YearReleased AND Products.BrandName = x.BrandName
+	) as fin, Products
+	WHERE Products.ProductName = fin.pn1
+) as final
+GROUP BY final.ProductName ) as numbers
+ON numbers.ProductName = Products.ProductName
+ORDER BY Products.ProductName
+
+3893285
+SELECT temp.ProductName, COUNT(temp.second)
+FROM 
+    (SELECT p.ProductName, p2.ProductName AS second
+    FROM Products p LEFT OUTER JOIN Products p2 ON p.BrandName = p2.BrandName AND p.ProductId <> p2.ProductId AND p.YearReleased > p2.YearReleased) as temp
+GROUP BY temp.ProductName
+
+
+
+3893285
+select new_table.ProductName, COALESCE(old_table.sum, 0 )
+from
+(select C.ProductId,C.ProductName from Products C) new_table
+left outer join 
+(select A.ProductId, count(*) as sum
+from
+Products A, Products B
+where A.YearReleased>B.YearReleased and A.BrandName=B.BrandName
+group by A.ProductId) old_table
+
+on new_table.ProductId=old_table.ProductId
+order by new_table.ProductName
+
+
+3893285
+SELECT cur.ProductName, Count(pre.ProductName)
+FROM Products AS cur
+LEFT JOIN Products AS pre
+ON (cur.BrandName = pre.BrandName AND cur.YearReleased > pre.YearReleased) 
+Group BY cur.ProductName
+
+3893285
+select pp.ProductName ,IFNULL(tb.temp_sum, 0) from Products pp left join (select pro.ProductName, sum(a.total) as temp_sum from Products pro join  (select p.BrandName, p.YearReleased, count(1) as total from Products p group by p.BrandName, p.YearReleased) as a on pro.BrandName = a.BrandName where pro.YearReleased > a.YearReleased  group by pro.ProductName ) as tb on pp.ProductName = tb.ProductName order by pp.ProductName
+
+3893285
+SELECT ProductName, COALESCE(temp.cnt, 0)
+FROM Products
+LEFT JOIN (
+    SELECT prod1.ProductName as name, count(prod2.ProductName) as cnt
+    FROM Products prod1, Products prod2
+    WHERE prod1.YearReleased > prod2.YearReleased
+    AND prod1.BrandName = prod2.BrandName
+    GROUP BY prod1.ProductName
+) as temp
+ON temp.name = Products.ProductName
+ORDER BY ProductName
+
+3893285
+select distinct a.ProductName, count(b.YearReleased < a.YearReleased)
+from Products a
+left join Products b on a.BrandName=b.BrandName and b.YearReleased < a.YearReleased
+group by ProductName
+order by ProductName;
+
+3893285
+select distinct
+    p.ProductName, ifnull (pc.prodCnt, 0)
+from
+    Products p
+    left outer join
+    (select
+        p.ProductId, count(*) prodCnt
+    from
+        Products p, Products p2
+    where p.YearReleased > p2.YearReleased and p.BrandName = p2.BrandName and p.ProductId not like p2.ProductId
+    group by p.ProductId
+    ) pc
+    on pc.ProductId = p.ProductId
+order by p.ProductName
+
+3893285
+SELECT Products.ProductName,  (SELECT count(*) from Products P where Products.BrandName = BrandName and Products.YearReleased > YearReleased) c
+from Products
+order by ProductName asc
+
+
+3893285
+SELECT a.ProductName,SUM(
+    if(a.YearReleased > b.YearReleased, 1, 0))
+FROM Products a
+LEFT JOIN Products b ON a.BrandName = b.BrandName
+WHERE a.BrandName = b.BrandName
+GROUP BY a.ProductName 
+
+
+3893285
+SELECT P.ProductName, (SELECT count(*) 
+                  FROM Products 
+                  WHERE (P.BrandName = BrandName) AND (P.YearReleased > YearReleased))
+From Products P
+ORDER BY P.ProductName
+
+3893285
+Select p.ProductName, (Select count(*) From Products Where p.BrandName = BrandName And p.YearReleased > YearReleased)
+From Products p
+Order by p.ProductName
+
+3893285
+select a.ProductName, 
+    (select count(*)
+     from Products as b
+     where a.BrandName = b.BrandName and a.YearReleased > b.YearReleased)
+from Products as a
+order by a.ProductName
+
+3893285
+SELECT P.ProductName, COUNT(P.ProductName) - 1
+FROM Products P, (SELECT * FROM Products) AS TEMP
+WHERE P.BrandName = TEMP.BrandName AND (P.YearReleased > TEMP.YearReleased OR P.ProductName = TEMP.ProductName)
+GROUP BY P.ProductName
+
+
+3893285
+select P.ProductName, count(P.ProductName) - 1
+from Products as P 
+join Products as PP on (P.BrandName = PP.BrandName and P.YearReleased > PP.YearReleased) or
+(P.BrandName = PP.BrandName and P.ProductName = PP.ProductName)
+group by P.ProductName
+
+3893285
+select Products.ProductName, coalesce(x.c, 0) from Products left join (select a.ProductName as p, count(*) as c from Products a left outer join Products b on a.BrandName = b.BrandName where a.YearReleased > b.YearReleased group by a.ProductName) x on x.p = Products.ProductName order by Products.ProductName asc
+
+3893285
+SELECT awk1.ProductName, COUNT(awk2.ProductName)
+FROM Products AS awk1
+left join Products AS awk2 on awk1.BrandName = awk2.BrandName AND awk1.YearReleased > awk2.YearReleased
+GROUP BY awk1.ProductName
+
+3893285
+select a.ProductName, count(b.YearReleased)
+from Products a
+left join Products as b 
+on a.BrandName = b.BrandName and a.YearReleased > b.YearReleased
+group by a.ProductName
+
+3893285
+SELECT prod.ProductName, (SELECT COUNT(prod2.ProductId) FROM Products as prod2 WHERE prod.BrandName = prod2.BrandName AND prod2.YearReleased < prod.YearReleased)
+FROM Products as prod
+ORDER BY prod.ProductName;
+
+3893285
+SELECT A.ProductName, COUNT(B.ProductId)
+FROM Products A
+LEFT JOIN Products B ON A.BrandName = B.BrandName AND A.YearReleased > B.YearReleased
+GROUP BY A.ProductId
+ORDER BY A.ProductName;
+
+3893285
+select a.ProductName, (select count(1) from Products as a1 where a.BrandName = a1.BrandName and a1.YearReleased < a.YearReleased ) as num from Products a ORDER BY a.ProductName
+
+3893285
+SELECT new.ProductName, COUNT(old.ProductId)-1
+FROM Products new, Products old
+WHERE (new.YearReleased > old.YearReleased and new.BrandName = old.BrandName) or (new.YearReleased = old.YearReleased and new.ProductName = old.productName)
+GROUP BY new.ProductName
+
+3893285
+Select ProductName, (Select Count(*) 
+                    From Products temp 
+                    Where BrandName = Current.BrandName AND 
+                    Current.YearReleased > YearReleased )
+From Products Current
+Order By ProductName
+
+3893285
+select P.ProductName, count(Q.ProductId)
+from Products as P left join Products as Q on P.YearReleased > Q.YearReleased and P.BrandName = Q.BrandName
+group by P.ProductName;
+
+3893285
+SELECT new.ProductName, COUNT(prior.ProductId)
+FROM Products new LEFT OUTER JOIN Products prior
+    ON new.BrandName = prior.BrandName AND new.YearReleased > prior.YearReleased
+GROUP BY new.ProductId
+ORDER BY new.ProductName;
+
+3893285
+select p7.ProductName, ifnull(p6.cts, 0)
+from Products p7
+LEFT JOIN
+(select p3.ProductName, p4.cts
+from Products p3, (select p5.ProductName,count(p5.bProductId) as cts
+from (select p1.ProductName, p2.ProductId as bProductId
+from Products p1, Products p2
+where p1.BrandName = p2.BrandName and p1.YearReleased > p2.YearReleased) p5
+group by p5.ProductName) p4
+where p3.ProductName = p4.ProductName) p6
+on p7.ProductName = p6.ProductName
+order by p7.ProductName
+
+3893285
+SELECT a.ProductName, (
+    SELECT COUNT(b.ProductId)
+    FROM Products b
+    WHERE a.YearReleased > b.YearReleased AND a.BrandName = b.BrandName)
+FROM Products a
+ORDER BY ProductName ASC
+
+3893285
+Select A.ProductName, Count(B.YearReleased)
+From Products A Left Outer Join Products B
+    on A.YearReleased > B.YearReleased and A.BrandName = B.BrandName
+Group By A.ProductName
+
+
+
+
+
+
+3893285
+select P.ProductName, (select count(*) from Products C where C.YearReleased < P.YearReleased and C.BrandName = P.BrandName) as _prodCount
+from Products P
+order by P.ProductName ASC;
+
+3893285
+SELECT new.ProductName, COUNT(old.ProductId)
+FROM Products old
+RIGHT OUTER JOIN Products new
+ON old.BrandName=new.BrandName AND new.YearReleased > old.YearReleased 
+GROUP BY new.ProductName;
+
+
+3893285
+SELECT Products.ProductName, COALESCE(op, 0)
+FROM Products
+LEFT JOIN (
+    SELECT now.ProductName as help1, COUNT(old.ProductId) as op
+    FROM Products now, Products old
+    WHERE now.BrandName = old.BrandName AND now.YearReleased > old.YearReleased GROUP BY now.ProductName
+    ) AS gg ON Products.ProductName = gg.help1
+ORDER BY ProductName
+
+
+
+
+
+3893285
+SELECT ProductName, counts 
+FROM (SELECT ProductName, BrandName, 
+    (SELECT COUNT(ProductName) 
+    FROM Products 
+    WHERE T1.YearReleased > YearReleased AND T1.BrandName = BrandName) AS counts
+FROM Products AS T1) AS T2
+ORDER BY ProductName
+
+3893285
+SELECT pr1.ProductName, COUNT(pr2.ProductId)
+FROM Products pr1
+LEFT OUTER JOIN Products pr2 
+ON pr1.BrandName = pr2.BrandName
+AND pr1.YearReleased > pr2.YearReleased
+GROUP BY pr1.ProductName
+
+3893285
+SELECT P.ProductName, COUNT(P.YearReleased > Pr.YearReleased) - 1
+FROM Products P JOIN Products Pr
+ON P.BrandName = Pr.BrandName
+WHERE (P.YearReleased > Pr.YearReleased) OR (P.ProductName = Pr.ProductName)
+GROUP BY P.ProductName;
+
+3893285
+SELECT
+    P.ProductName,
+    ifnull(t.cnt, 0)
+FROM 
+    Products P 
+    LEFT OUTER JOIN 
+    (SELECT
+        P.ProductId,
+        count(*) as cnt
+    FROM
+        Products P,
+        Products PP
+    WHERE 
+        P.YearReleased > PP.YearReleased
+        AND
+        P.BrandName = PP.BrandName
+        AND
+        P.ProductId <> PP.ProductId
+    GROUP by
+        P.ProductId
+    ) as t
+        on P.ProductId = t.ProductId
+ORDER by
+    P.ProductName
+        
+
+    
+
+3893285
+SELECT ProductName, (SELECT COUNT(*)
+                    FROM Products a
+                    WHERE p.YearReleased > a.YearReleased AND p.BrandName = a.BrandName)
+                    
+FROM Products p
+ORDER BY ProductName
+
+
+3893285
+SELECT
+p.ProductName,
+SUM(CASE WHEN p.YearReleased > old.YearReleased then 1 else 0 end) as Products_released_before
+FROM Products AS p
+LEFT JOIN Products AS old ON p.YearReleased > old.YearReleased AND p.BrandName = old.BrandName
+group by p.ProductName;
+
+3893285
+SELECT a.ProductName, (SELECT COUNT(*) FROM Products b WHERE a.BrandName = b.BrandName AND a.YearReleased > b.YearReleased)
+FROM Products a
+#LEFT JOIN Products b ON a.BrandName = b.BrandName
+#GROUP BY a.ProductName
+ORDER BY a.ProductName
+
+/**
+ put a.YearReleased > b.YearReleased somewhere else? it's filtering out results with 0
+ because those results don't have a.YearReleased > b.YearReleased
+*/
+
+3893285
+SELECT A.ProductName, SUM(CASE WHEN (A.YearReleased > B.YearReleased AND A.BrandName = B.BrandName)  THEN 1 ELSE 0 END)
+FROM Products A, Products B
+GROUP BY A.ProductName
+
+3893285
+Select A.ProductName, Count(B.YearReleased)
+From Products A left outer join Products B on A.YearReleased > B.YearReleased and A.BrandName = B.BrandName
+Group by A.ProductName
+
+-- SELECT A.FirstName, A.LastName, A.NetID, SUM(B.Credits)
+-- FROM Students A, Enrollments B
+-- WHERE A.NetId = B.NetId
+-- Group BY B.NetId 
+-- Having SUM(B.Credits)>12
+-- ORDER BY SUM(B.Credits) DESC, A.FirstName
+
+
+3893285
+select ProductName, 
+(select count(*)
+  from Products Pro2
+  where Pro2.YearReleased < Pro.YearReleased and Pro2.BrandName = Pro.BrandName)
+from Products Pro
+order by ProductName
+
+3893285
+SELECT t1.ProductName, 
+  (SELECT count(t2.ProductId)
+   FROM Products t2  
+   WHERE t1.YearReleased > t2.YearReleased AND t1.BrandName = t2.BrandName
+   ) AS number_product_release_early 
+FROM Products t1 
+order by t1.ProductName
+
+3893285
+SELECT ProductName, (SELECT COUNT(DISTINCT ProductId)
+                FROM Products B
+                WHERE B.YearReleased < A.YearReleased and B.BrandName = A.BrandName ) 
+From Products A
+ORDER BY LOWER(ProductName);
+
+
+                
+
+
+3893285
+SELECT C.ProductName, (SELECT COUNT(D.ProductName) FROM Products D WHERE D.YearReleased < C.YearReleased AND C.BrandName = D.BrandName)
+FROM Products C
+ORDER BY C.ProductName;
+
+3893285
+select ProductName, (
+    select count(*) from Products where YearReleased < Current.YearReleased and BrandName=Current.BrandName
+)
+from Products as Current
+order by ProductName;
+
+3893285
+SELECT Prod.ProductName, SUM(Prod.YearReleased > Prod1.YearReleased) FROM Products Prod
+JOIN Products Prod1 ON Prod.BrandName = Prod1.BrandName
+GROUP BY Prod.ProductName
+
+3893285
+select 
+  t.ProductName,
+  (select count(*) from Products where BrandName = t.BrandName AND YearReleased < t.YearReleased) count
+from Products t
+order by ProductName
+
+3893285
+select ProductName,(Select count(*) from Products b where a.BrandName=b.BrandName and b.YearReleased<a.YearReleased) from Products a Order by ProductName ASC;
+
+3893285
+select ProductName, (select count(*) from Products where YearReleased < p.YearReleased and BrandName = p.BrandName) as cnt from Products p order by ProductName
+
+3893285
+SELECT ProductName, (
+    SELECT COUNT(ProductName)
+    FROM Products AS ProductsBefore
+    WHERE Products.YearReleased > ProductsBefore.YearReleased 
+        AND Products.BrandName = ProductsBefore.BrandName
+)
+FROM Products
+ORDER BY ProductName ASC; 
+
+3893285
+SELECT d.ProductName, (SELECT COUNT(*)-1 FROM Products p2 WHERE ((p2.YearReleased <d.YearReleased AND d.BrandName = p2.BrandName) OR (p2.ProductId = d.ProductId AND p2.YearReleased=d.YearReleased)) GROUP by p2.BrandName)
+FROM Products d
+GROUP By d.BrandName, d.ProductName, d.YearReleased, d.ProductId
+ORDER By d.ProductName
+
+3893285
+select ProductName,count(ProductId)
+from (select p.ProductName, p.ProductId as ProductMainId, pp.ProductId
+from Products p left outer join Products pp on p.BrandName = pp.BrandName and p.YearReleased > pp.YearReleased) as ppp
+group by ProductMainId
+order by ProductName
+
+
+3893285
+select p.ProductName, 
+(select count(*) from Products where Yearreleased < p.yearreleased and p.brandname = brandname)
+from Products p
+order by p.ProductName;
+
+3893285
+select pr.ProductName, (select count(*) from Products pr2 where pr2.YearReleased < pr.YearReleased and pr2.BrandName = pr.BrandName)
+from Products pr
+order by pr.ProductName;
+
+3893285
+SELECT p3.ProductName, IFNULL(Num, 0)
+FROM Products as p3 LEFT JOIN
+(SELECT p2.ProductName as name, count(*) AS Num
+FROM Products as p1, Products as p2
+WHERE p1.BrandName = p2.BrandName AND p1.YearReleased < p2.YearReleased
+GROUP BY p2.ProductName) AS NumProducts
+ON p3.ProductName = NumProducts.name
+ORDER BY p3.ProductName
+
+3893285
+SELECT ProductName,
+(select count(*) from Products p where p.BrandName = Products.BrandName AND p.YearReleased < Products.YearReleased)
+FROM Products
+order by ProductName ASC;
+
+3893285
+SELECT P.ProductName, COUNT(Q.ProductID)
+FROM Products P LEFT OUTER JOIN Products Q ON
+    P.BrandName = Q.BrandName AND P.YearReleased > Q.YearReleased
+GROUP BY P.ProductID
+ORDER BY P.ProductName;
+
+3893285
+SELECT ProductName, NumProds
+FROM (SELECT prod1.ProductName, COUNT(prod2.ProductId) AS NumProds
+      FROM Products prod1 LEFT OUTER JOIN Products prod2 ON (prod1.BrandName = prod2.BrandName AND
+      prod1.YearReleased > prod2.YearReleased) 
+      GROUP BY prod1.ProductName) AS T
+
+3893285
+SELECT  P.ProductName, count(R.ProductName)-- P.ProductName, COUNT(R.ProductName)
+FROM Products P LEFT OUTER JOIN  Products R 
+    ON (P.BrandName=R.BrandName AND P.YearReleased > R.YearReleased)
+GROUP BY P.ProductName
+
+3893285
+SELECT A.ProductName, COUNT(CASE WHEN (A.BrandName = B.BrandName AND A.YearReleased > B.YearReleased) THEN 1 ELSE NULL END) AS PrevProducts
+FROM Products AS A, Products AS B
+GROUP BY A.ProductName;
+
+3893285
+SELECT ProductName, counts FROM 
+(
+    SELECT ProductName, BrandName, 
+        (SELECT COUNT(ProductName) FROM Products WHERE Final.YearReleased > YearReleased AND Final.BrandName = BrandName) as counts
+    FROM Products
+    AS Final
+) AS prodCounts
+ORDER BY ProductName
+
+
+3893285
+SELECT bt.ProductName, COUNT(bt.result)
+FROM
+    (SELECT pp.ProductName, A.ProductName AS result
+    FROM Products pp LEFT OUTER JOIN Products A ON pp.YearReleased > A.YearReleased    
+    AND pp.BrandName = A.BrandName
+    AND pp.ProductId <> A.ProductId) AS bt
+GROUP BY bt.ProductName
+
+
+3893285
+SELECT A.ProductName, COUNT(case when B.YearReleased < A.YearReleased and B.BrandName = A.BrandName then 1 end)
+FROM Products A 
+CROSS JOIN Products B
+GROUP BY A.ProductName;
+
+3893285
+SELECT a.ProductName, COUNT(b.ProductName) AS number
+FROM Products AS a
+LEFT JOIN Products AS b
+ON a.BrandName = b.BrandName AND a.YearReleased > b.YearReleased
+GROUP BY a.ProductId
+ORDER BY a.ProductName 
+
+3893285
+SELECT c.ProductName, COUNT(b.ProductName)
+FROM    (SELECT distinct p.ProductName
+         FROM Products p
+         )AS c
+
+LEFT JOIN   (SELECT a.ProductName, a.YearReleased
+            FROM(SELECT p.BrandName, p.YearReleased, p.ProductName
+                 FROM Products p, Brands b
+                 WHERE p.BrandName = b.BrandName ) AS a, Products pr
+            WHERE a.BrandName = pr.BrandName and a.YearReleased > pr.YearReleased
+            ) AS b
+ON c.ProductName = b.ProductName
+GROUP BY c.ProductName
+
+
+3893285
+Select P.ProductName,
+(
+Select count(ProductId)
+from Brands NATURAL JOIN Products
+where YearReleased < P.YearReleased and BrandName=B.BrandName
+)
+from Products P, Brands B
+where P.BrandName=B.BrandName
+order by P.ProductName ASC
+
+3893285
+SELECT pr.ProductName, (SELECT Count(*) FROM Products pr2 WHERE pr.BrandName = pr2.BrandName AND pr2.YearReleased < pr.YearReleased) FROM Products pr ORDER BY pr.ProductName ASC;
+        
+
+3893285
+SELECT Products.ProductName, COALESCE(amount, 0)
+FROM Products
+LEFT JOIN (
+        SELECT curr.ProductName AS name, COUNT(curr.ProductId) AS amount
+        FROM Products curr, Products pre
+        WHERE curr.BrandName = pre.BrandName AND curr.YearReleased > pre.YearReleased
+        GROUP BY name
+    ) AS my_temp ON Products.ProductName = my_temp.name
+ORDER BY ProductName;
+
+3893285
+SELECT ProductName, (SELECT COUNT(*) FROM Products i WHERE i.YearReleased < o.YearReleased and i.BrandName = o.BrandName)
+FROM Products AS o
+ORDER BY ProductName
+
+3893285
+Select ProductName, count(earlier)
+FROM Products oriP
+LEFT JOIN (
+    SELECT pp.ProductID AS earlier, pp.BrandName AS bn, pp.YearReleased AS yr
+    FROM Products pp
+) AS p
+ON p.bn = oriP.BrandName AND p.yr < oriP.YearReleased
+GROUP BY ProductName, ProductId, BrandName, YearReleased
+
+3893285
+select n.ProductName, Count(*)-1
+from Products m join Products n 
+where m.BrandName = n.BrandName and (n.YearReleased > m.YearReleased or n.ProductName = m.ProductName)
+group by n.ProductName
+
+
+3893285
+SELECT ProductName,
+(SELECT COUNT(*)
+FROM Products Pro2
+WHERE Pro2.YearReleased < Pro.YearReleased AND Pro2.BrandName = Pro.BrandName)
+FROM Products Pro
+ORDER by ProductName
+
+3893285
+SELECT item.ProductName, (Select count(ProductId) from Products 
+where item.BrandName = BrandName and item.YearReleased > YearReleased)
+FROM Products item
+ORDER BY item.ProductName
+
+3893285
+SELECT ProductName, (SELECT COUNT(*) FROM Products p WHERE 
+p.YearReleased < x.YearReleased AND p.BrandName = x.BrandName)
+FROM Products x
+ORDER BY ProductName
+
+
+
+
+
+
+
+
+
+
+######################################################################
+# Cluster: 1         
+######################################################################
+
+3893285
+select distinct p.ProductName, COALESCE(tmp.cn, 0 )
+from Products p left join (select p1.ProductId, count(p2.ProductId) as cn from Products p1 right join Products p2 on p1.BrandName = p2.BrandName where p1.YearReleased > p2.YearReleased group by p1.ProductId) as tmp on p.ProductId = tmp.ProductId
+order by p.ProductName;
+
+3893285
+SELECT p.ProductName, (SELECT count(YearReleased)
+                       FROM Products p2
+                       WHERE p.YearReleased > p2.YearReleased AND p.BrandName = p2.BrandName)
+FROM Products p
+ORDER BY p.ProductName ASC
+
+3893285
+select p1.ProductName,(
+select count(p2.ProductName)
+from Products p2
+where p1.BrandName = p2.BrandName and p2.YearReleased < p1.YearReleased
+-- group by p2.BrandName
+-- having count(p2.YearReleased) <= 2010
+)
+from Products p1
+#,YearRelease
+-- Name
+#having p1.time
+order by p1.ProductName
+
+3893285
+Select p1.ProductName, Count(p1.ProductId)-1
+From Products p1, Products p2
+Where (p1.YearReleased > p2.YearReleased AND p1.BrandName = p2.BrandName) or p1.ProductId = p2.ProductId
+Group BY p1.ProductId
+ORDER BY p1.ProductName
+
+3893285
+SELECT p1.ProductName, COUNT(p2.ProductName)
+FROM Products p1 LEFT OUTER JOIN Products p2 ON p1.BrandName = p2.BrandName AND p1.YearReleased > p2.YearReleased
+GROUP BY p1.ProductName;
+
+
+
+
+3893285
+SELECT P.ProductName, (
+SELECT count(*)
+FROM Products P2
+WHERE P2.BrandName = P.BrandName
+AND P2.YearReleased < P.YearReleased
+)
+FROM Products P 
+ORDER BY P.ProductName
+
+
+
+
+
+3893285
+Select p1.ProductName, (Select count(*) From Products p2
+Where p1.BrandName = p2.BrandName and p1.YearReleased > p2.YearReleased)
+From Products p1
+Order by p1.ProductName
+
+
+3893285
+SELECT p3.ProductName, coalesce(temp.num, 0)
+FROM(SELECT p1.ProductName, COUNT(p2.ProductName) AS num
+FROM Products p1, Products p2
+WHERE p1.BrandName = p2.BrandName and p1.YearReleased > p2.YearReleased 
+GROUP BY p1.ProductName) AS temp RIGHT OUTER JOIN Products p3 ON temp.ProductName = p3.ProductName
+ORDER BY p3.ProductName
+
+
+
+3893285
+SELECT p1.ProductName, COUNT(p2.ProductName)
+FROM Products p1 LEFT OUTER JOIN Products p2 ON (p1.YearReleased > p2.YearReleased AND p1.BrandName = p2.BrandName)
+GROUP BY p1.ProductName;
+
+
+3893285
+SELECT ProductName, (SELECT COUNT(ProductId)
+                        FROM Products P2 JOIN Brands B2 ON P2.BrandName = B2.BrandName
+                        WHERE P1.YearReleased > P2.YearReleased AND B1.BrandName = B2.BrandName)
+FROM Products P1 JOIN Brands B1 ON P1.BrandName = B1.BrandName
+ORDER BY ProductName;
+
+3893285
+select ProductName, (select count(ProductId) from Products p2 where p1.BrandName = p2.BrandName and p1.YearReleased > p2.YearReleased)
+From Products p1
+order by ProductName
+;
+
+3893285
+select p1.ProductName, count(p1.ProductName)-1
+from Products p1 join Products p2 on p1.BrandName = p2.BrandName
+where p1.YearReleased > p2.YearReleased or p1.ProductName = p2.ProductName
+group by p1.ProductName
+
+3893285
+Select p1.ProductName, count(p2.ProductName)
+From Products p1 LEFT OUTER JOIN Products p2 ON (p1.BrandName = p2.BrandName && p1.YearReleased > p2.YearReleased)
+Group by p1.ProductId
+Order by p1.ProductName
+
+3893285
+SELECT p1.ProductName, SUM(p1.YearReleased > p2.YearReleased)
+FROM Products p1
+LEFT OUTER JOIN 
+(SELECT ProductName, BrandName, YearReleased
+FROM Products) AS p2
+ON p1.BrandName = p2.BrandName
+-- p1.YearReleased > p2.YearReleased
+GROUP BY p1.ProductName
+
+3893285
+SELECT p1.ProductName, COUNT(p2.ProductId)
+FROM Products p1 LEFT JOIN Products p2
+ON p1.BrandName = p2.BrandName AND p2.YearReleased < p1.YearReleased
+GROUP BY p1.ProductName
+
+3893285
+Select p1.ProductName, (Select Count(*) from Products as p2 where p2.YearReleased < p1.YearReleased and p1.BrandName = p2.BrandName) as p3 
+from Products as p1
+order by p1.ProductName ASC
+
+3893285
+Select p1.ProductName,  (Select Count(*)
+                            From Products p2
+                            Where p1.BrandName = p2.BrandName And p2.YearReleased < p1.YearReleased) as theCount
+From Products p1
+Order By p1.ProductName 
+
+3893285
+SELECT P1.ProductName,COUNT(P2.ProductId)
+FROM Products P1 LEFT OUTER JOIN Products P2 ON P1.BrandName=P2.BrandName AND P1.YearReleased > P2.YearReleased
+GROUP BY P1.ProductName;
+
+
+3893285
+SELECT p1.ProductName, (SELECT Count(*)
+                        FROM Products p2
+                        WHERE ((p1.BrandName = p2.BrandName) AND 
+                        (p1.YearReleased > p2.YearReleased)))
+FROM Products p1
+ORDER BY p1.ProductName
+
+3893285
+SELECT p.ProductName, COUNT(p2.ProductName)
+FROM Products p LEFT OUTER JOIN Products p2
+    ON p.BrandName = p2.BrandName AND p.YearReleased > p2.YearReleased
+    GROUP BY p.ProductName;
+
+
+3893285
+SELECT p1.ProductName, COUNT(p2.ProductName)
+FROM Products p1 LEFT OUTER JOIN Products p2 
+ON (p2.YearReleased < p1.YearReleased) AND (p2.BrandName = p1.BrandName)
+GROUP by p1.ProductName
+
+3893285
+SELECT pro.ProductName, COUNT(p.ProductId) as olderProducts
+FROM Products pro
+LEFT OUTER JOIN (SELECT p1.ProductId FROM Products p1, Products p2 WHERE p1.BrandName = p2.BrandName AND p1.YearReleased > p2.YearReleased) p ON pro.ProductId = p.ProductId
+GROUP BY pro.ProductId
+ORDER BY pro.ProductName;
+
+3893285
+SELECT p1.ProductName, Count(p2.ProductId)
+FROM Products p1 LEFT OUTER JOIN Products p2 
+    ON p1.BrandName = p2.BrandName AND p1.YearReleased > p2.YearReleased
+GROUP BY p1.ProductId
+ORDER BY p1.ProductName
+
+-- SELECT * FROM Products p1 JOIN Products p2 ON p1.BrandName = p2.BrandName
+
+3893285
+select p1.ProductName, count(p2.ProductId) from
+    Products p1 left join Products p2 on p1.BrandName = p2.BrandName and p1.YearReleased > p2.YearReleased group by p1.ProductId, p1.ProductName order by p1.ProductName;
+
+3893285
+select p1.ProductName, count(p1.ProductName) - 1
+from Products p1 join Products p2 on p1.BrandName = p2.BrandName
+where p1.YearReleased > p2.YearReleased or p1.ProductName = p2.ProductName
+group by p1.ProductName
+
+
+3893285
+SELECT ProductName, COALESCE(c, 0)
+FROM Products
+LEFT JOIN (
+        SELECT p1.ProductName AS Prod1, COUNT(p1.ProductId) AS c
+        FROM Products p1, Products p2
+        WHERE p2.YearReleased < p1.YearReleased
+        AND p1.BrandName = p2.BrandName
+        GROUP BY Prod1
+    ) AS inner_table ON Products.ProductName = inner_table.Prod1
+ORDER BY ProductName ASC
+
+
+3893285
+SELECT p1.ProductName AS curr_prod, (SELECT COUNT(p1.ProductName) FROM Products p1, Products p2 WHERE p1.ProductName = curr_prod AND p1.YearReleased > p2.YearReleased AND p1.BrandName = p2.BrandName)
+FROM Products p1, Products p2
+WHERE p1.BrandName = p2.BrandName
+GROUP BY p1.ProductName;
+
+3893285
+select ProductName, (select count(*)
+                    from Products p2
+                    where p2.YearReleased < p1.YearReleased and p2.BrandName = p1.BrandName)
+from Products p1
+order by p1.ProductName
+
+3893285
+SELECT ProductName,
+    (SELECT COUNT(ProductName) FROM Products AS P2
+        WHERE Products.YearReleased > P2.YearReleased AND Products.BrandName = P2.BrandName)
+    FROM Products
+    ORDER BY ProductName
+
+3893285
+SELECT ProductName, 0 as count_before
+FROM Products 
+WHERE ProductName NOT IN (SELECT p1.ProductName FROM Products p1, Products p2 WHERE p1.YearReleased > p2.YearReleased AND p1.BRANDNAME = p2.BRANDNAME GROUP BY p1.ProductName)
+UNION ALL
+SELECT p1.ProductName as ProductName, count(p2.ProductName) as count_before
+FROM Products p1, Products p2 
+WHERE p1.YearReleased > p2.YearReleased AND p1.BRANDNAME = p2.BRANDNAME 
+GROUP BY p1.ProductName
+ORDER BY ProductName;
+
+3893285
+SELECT p.ProductName, (
+    SELECT COUNT(*)
+    FROM Products p1
+    WHERE p1.YearReleased < p.YearReleased
+    AND p.BrandName = p1.BrandName
+)
+FROM Products p
+ORDER BY p.ProductName
+
+3893285
+SELECT P.ProductName, COUNT(RealCounts.ProductId) FROM Products P
+LEFT OUTER JOIN
+(SELECT P1.ProductId FROM Products P1, Products P2
+WHERE P1.YearReleased > P2.YearReleased AND P1.BrandName = P2.BrandName) as RealCounts
+ON P.ProductId = RealCounts.ProductId
+GROUP BY P.ProductId
+ORDER BY P.ProductName
+
+3893285
+SELECT p1.ProductName, SUM(p1.YearReleased > p2.YearReleased)
+FROM Products p1 LEFT OUTER JOIN Products p2 ON p1.BrandName = p2.BrandName
+GROUP BY p1.ProductName
+
+3893285
+SELECT P1.ProductName, 
+(SELECT COUNT(*) FROM Products as P2 
+WHERE P1.BrandName = P2.BrandName 
+AND P2.YearReleased < P1.YearReleased)
+FROM Products as P1
+ORDER BY P1.ProductName
+
+3893285
+SELECT ProductName, 
+(SELECT COUNT(*)
+    FROM Products AS p2
+    WHERE p2.YearReleased < p.YearReleased and p2.BrandName = p.BrandName
+    
+)
+FROM Products AS p
+ORDER BY ProductName;
+
+3893285
+select p1.ProductName, count(p2.ProductId)
+from
+(Products p1 left join Products p2
+on p1.BrandName=p2.BrandName and p1.YearReleased > p2.YearReleased)
+group by p1.ProductId
+order by p1.ProductName
+
+
+3893285
+select p3.ProductName, coalesce ( tb1.ct,0) from (select p1.ProductName, count(p2.ProductName) as ct from Products p1, Products p2 where p2.BrandName = p1.Brandname and p2.YearReleased < p1.YearReleased group by p1.ProductName) as tb1 right outer join Products p3 on tb1.ProductName = p3.ProductName order by p3.ProductName asc
+
+3893285
+select P1.ProductName,(select count(P2.ProductId)
+                     from Products P2
+                     where P2.YearReleased < P1.YearReleased and P1.BrandName = P2.BrandName)
+from Products P1
+order by P1.ProductName  
+
+3893285
+SELECT P1.ProductName, COALESCE((SELECT COUNT(*)
+						FROM Products P2
+						WHERE P1.BrandName = P2.BrandName AND P1.ProductName <> P2.ProductName AND P2.YearReleased < P1.YearReleased
+                        GROUP BY P2.BrandName), 0)
+FROM Products P1
+ORDER BY P1.ProductName;
+
+3893285
+SELECT p.ProductName, (SELECT COUNT(p2.YearReleased)
+                       FROM Products p2
+                       WHERE p2.YearReleased < p.YearReleased AND p2.BrandName = p.BrandName)
+FROM Products p
+ORDER BY p.ProductName
+
+3893285
+SELECT P1.ProductName, (
+    SELECT COUNT(P2.ProductId)
+    FROM (Products P2 INNER JOIN Brands B2 ON B2.BrandName = P2.BrandName)
+    WHERE P2.YearReleased < P1.YearReleased AND P1.BrandName = P2.BrandName
+)
+FROM Products P1
+ORDER BY P1.ProductName
+
+3893285
+Select  p1.ProductName,  Count(p2.ProductId) - 1
+From Products p1,  Products p2
+-- on  
+-- p1.ProductId <> p2.ProductId
+Where  (p1.BrandName = p2.BrandName and p1.YearReleased > p2.YearReleased) or p1.ProductName = p2.ProductName
+Group by p1.ProductId
+order by p1.ProductName
+
+3893285
+SELECT p1.ProductName, Count(p2.ProductId) as p2Previous_Products
+FROM Products as p1 
+    LEFT OUTER JOIN Products as p2 
+      ON (p1.BrandName = p2.BrandName 
+     AND p1.YearReleased > p2.YearReleased)
+GROUP BY p1.ProductName, p1.ProductId
+
+
+3893285
+SELECT p.ProductName, Count(p1.ProductName)
+FROM Products p LEFT OUTER JOIN Products p1 ON (p.YearReleased > p1.YearReleased) AND (p.BrandName = p1.BrandName)
+Group By p.ProductName
+
+3893285
+SELECT ProductName, COALESCE(c, 0)
+FROM Products
+LEFT JOIN (
+        SELECT p1.ProductName AS Prod1, COUNT(p1.ProductId) AS c
+        FROM Products p1, Products p2
+        WHERE p2.YearReleased < p1.YearReleased
+        AND p1.BrandName = p2.BrandName
+        GROUP BY Prod1
+    ) AS inner_table ON Products.ProductName = inner_table.Prod1
+ORDER BY ProductName ASC
+
+
+3893285
+SELECT P1.ProductName, COUNT(P1.ProductName) - 1
+FROM Products P1 JOIN Products P2 ON P1.BrandName = P2.BrandName
+WHERE P2.YearReleased < P1.YearReleased OR P1.ProductName = P2.ProductName
+GROUP BY P1.ProductName;
+
+
+3893285
+SELECT ProductName, COALESCE(ct, 0)
+FROM Products P
+LEFT JOIN (
+    SELECT P1.ProductName AS prodName, COUNT(P1.ProductId) AS ct
+    FROM Products P1, Products P2
+    WHERE P2.YearReleased < P1.YearReleased AND P1.BrandName = P2.BrandName
+    GROUP BY prodName
+) AS prevProd ON P.ProductName = prevProd.prodName
+ORDER BY ProductName ASC
+
+3893285
+select p.ProductName, (select count(p2.YearReleased) from Products p2 where p.YearReleased > p2.YearReleased and p.BrandName = p2.BrandName) 
+from Products p 
+order by p.productName
+-- having p.YearReleased > p2.YearReleased;
+-- where p.YearReleased < b.YearEstablished
+-- group by p.ProductName
+;
+
+3893285
+SELECT ProductName, (SELECT Count(*) From Products P2 Where P2.BrandName=P1.BrandName and P2.YearReleased < P1.YearReleased)
+FROM Products P1
+ORDER BY ProductName
+
+3893285
+SELECT P.ProductName, count(P.BrandName)-1
+FROM Products P, Products P2
+WHERE P.BrandName = P2.BrandName AND (P.YearReleased > P2.YearReleased  OR 
+    (P.ProductId = P2.ProductId AND P.YearReleased = P2.YearReleased))
+GROUP BY P.ProductName
+
+3893285
+SELECT p1.ProductName, (SELECT COUNT(*)
+    FROM Products p2
+    WHERE p1.BrandName = p2.BrandName AND p2.YearReleased < p1.YearReleased
+)
+FROM Products p1
+ORDER BY p1.ProductName ASC
+
+
+
+
+
+3893285
+SELECT p2.ProductName, (SELECT COUNT(*)
+                        FROM Products p
+                        WHERE p2.BrandName = p.BrandName and p2.YearReleased > p.YearReleased)
+FROM Products p2
+ORDER BY p2.ProductName
+
+3893285
+SELECT p1Name, COUNT(p2Name)
+FROM (SELECT P1.ProductName AS p1Name, P2.ProductName AS p2Name
+    FROM Products P1
+    LEFT JOIN Products P2 ON P1.YearReleased > P2.YearReleased
+        AND P1.BrandName = P2.BrandName) AS productInfo
+GROUP BY p1Name;
+
+3893285
+SELECT p1.ProductName, COUNT(p2.ProductId)
+FROM Products p1 LEFT OUTER JOIN Products p2 ON p1.BrandName = p2.BrandName AND p1.YearReleased > p2.YearReleased
+GROUP BY p1.ProductId
+ORDER BY p1.ProductName
+
+3893285
+SELECT prd1, COUNT(null_check) FROM (SELECT p1.productName as prd1, p2.productName as null_check
+FROM Products p1 LEFT OUTER JOIN Products p2 on 
+    p1.BrandName = p2.BrandName and p1.YearReleased > p2.YearReleased) as t
+GROUP BY prd1
+
+
+3893285
+SELECT p1.ProductName, COUNT(p1.ProductId)-1
+FROM Products p1, Products p2
+WHERE (p1.BrandName=p2.BrandName AND p1.YearReleased > p2.YearReleased) OR p1.ProductId=p2.ProductId
+GROUP BY p1.ProductName
+
+3893285
+select p1.ProductName, count(p2.productId)
+from Products as p1
+left outer join Products as p2
+on p1.BrandName = p2.BrandName 
+and p1.YearReleased > p2.YearReleased group by p1.ProductID
+order by p1.ProductName
+
+3893285
+SELECT p.ProductName, COUNT(p2.ProductName)
+FROM Products p LEFT JOIN Products p2 
+ON p.BrandName = p2.BrandName AND p.YearReleased > p2.YearReleased
+GROUP BY p.ProductName
+
+3893285
+SELECT P3.ProductName, coalesce(temp.pre, 0)
+FROM (SELECT P1.ProductName, COUNT(P2.ProductName) AS pre
+FROM Products P1, Products P2
+WHERE P1.BrandName = P2.BrandName and P1.YearReleased > P2.YearReleased
+GROUP BY P1.ProductName) AS temp RIGHT OUTER JOIN Products P3 ON temp.ProductName = P3.ProductName
+ORDER BY P3.ProductName
+
+3893285
+SELECT p1.ProductName,COUNT(p2.ProductName)
+FROM Products p1 LEFT OUTER JOIN Products p2 ON
+p1.BrandName = p2.BrandName AND p2.YearReleased < p1.YearReleased
+GROUP BY p1.ProductName
+
+3893285
+SELECT P1.ProductName, COUNT(P2.ProductName)
+FROM Products P1
+LEFT OUTER JOIN Products P2 ON P1.BrandName = P2.BrandName AND P1.ProductId <> P2.ProductId AND P2.YearReleased < P1.YearReleased
+GROUP BY P1.ProductName
+
+3893285
+SELECT P1.ProductName, COUNT(*) - 1
+FROM Products P1
+     JOIN (SELECT ProductName, YearReleased, BrandName
+           FROM Products) 
+           AS P2 ON P1.BrandName = P2.BrandName
+WHERE P1.YearReleased > P2.YearReleased OR P1.ProductName = P2.ProductName
+GROUP BY P1.ProductName
+
+3893285
+select p1.ProductName, count(p2.ProductName) 
+from Products p1 left join Products p2 on p2.BrandName = p1.BrandName and p2.YearReleased < p1.YearReleased
+group by p1.ProductName
+
+3893285
+select p1.ProductName, sum(if(p2.YearReleased < p1.YearReleased, 1, 0))
+from Products p1 inner join Products p2
+on p1.BrandName = p2.BrandName
+group by p1.ProductName
+order by p1.ProductName
+
+
+3893285
+SELECT ProductName, (SELECT COUNT(ProductId) FROM Products p2 WHERE p2.BrandName=p1.BrandName AND p2.YearReleased<p1.YearReleased)
+FROM Products p1
+ORDER BY ProductName ASC
+
+3893285
+SELECT p1.ProductName, COUNT(p2.ProductId)
+FROM Products p1
+  LEFT JOIN Products p2 ON (p2.BrandName = p1.BrandName AND p2.YearReleased < p1.YearReleased)
+GROUP BY p1.ProductName
+
+3893285
+SELECT ProductName, (SELECT count(*) FROM Products p2 WHERE p2.BrandName = p1.BrandName AND p2.YearReleased < p1.YearReleased)
+FROM Products p1
+ORDER BY ProductName ASC
+
+3893285
+SELECT 
+    ProductName, (SELECT COUNT(P2.ProductId) 
+                    FROM Products P2 
+                   WHERE P2.BrandName = P1.BrandName 
+                     AND P2.YearReleased < P1.YearReleased) AS number
+FROM    
+    Products P1
+ORDER BY
+    ProductName ASC
+
+
+
+
+3893285
+SELECT p1.ProductName, COUNT(p2.ProductName)
+FROM Products p1 LEFT OUTER JOIN Products p2 ON p1.BrandName = p2.BrandName AND p1.YearReleased > p2.YearReleased 
+GROUP BY p1.ProductName
+
+3893285
+Select p1.ProductName, count(p2.ProductName)
+from Products p1 left outer join Products p2 on p1.BrandName = p2.BrandName
+and p2.YearReleased < p1.YearReleased
+group by p1.ProductName
+
+3893285
+SELECT p1.ProductName, SUM(CASE WHEN p1.YearReleased > p2.YearReleased && p1.BrandName = p2.BrandName THEN 1 ELSE 0 END)
+FROM Products p1, Products p2
+GROUP BY p1.ProductName
+
+3893285
+SELECT p.ProductName, (SELECT COUNT(p1.BrandName) FROM Products p1 WHERE (p1.BrandName = p.BrandName) AND (p1.YearReleased < p.YearReleased)) AS numProds
+FROM Products p
+ORDER BY p.ProductName;
+
+3893285
+SELECT p.ProductName, (Select Count(*) From Products p2 Where p2.YearReleased < p.YearReleased AND p.BrandName = p2.BrandName)
+From Products p 
+Order By p.ProductName
+
+3893285
+SELECT p1.ProductName, COUNT(p2.YearReleased) - 1
+FROM Products as p1, Products as p2
+WHERE (p1.BrandName = p2.BrandName AND p2.YearReleased < p1.YearReleased) OR
+      (p1.ProductName = p2.ProductName)
+GROUP BY p1.ProductName;
+
+
