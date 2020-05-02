@@ -61,8 +61,8 @@ class MySQLDB:
 		return result
 
 	# returns all queries
-	def read_all_queries(self):
-		sql = "SELECT * FROM `hw1`"
+	def readAllQueries(self):
+		sql = "SELECT * FROM `Queries`"
 		self.mycursor.execute(sql)
 		result = self.mycursor.fetchall()
 		return result
