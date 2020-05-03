@@ -39,6 +39,12 @@ python createEmbeddings.py [path+filename] [boolean]
 The embeddings will be stored in a pickle file called 'NewQueryEmbeddings'. When read into a dictionary, the keys will be the QueryIDs from the given csv file, and its value will be the document embeddings generated for that query.
 
 
+## Analyze clusters in cluster.ipynb 
+
+1. Go to Clustering section 
+2. Adjust your parameters 
+3. View clusters 
+4. Output to JSON 
 
 
 ## Todo 
@@ -49,10 +55,12 @@ The embeddings will be stored in a pickle file called 'NewQueryEmbeddings'. When
 - [x] Summarize 04/04 meeting notes--Jiaqi
 - [x] Meet with Abdu to finalize criteria--Sush (what would he want queries to be clustered by?)
 - [x] Get embeddings for raw data and keywords (Sush)
-- [ ] Cluster raw data vs. keywords (Jiaqi)
+- [x] Cluster raw data vs. keywords (Jiaqi)
 - [ ] Implement parsing (Heather)
-- [ ] Get additional features 
+- [ ] Get additional features, i.e. count vector (Jiaqi)
 - [x] Create MongoDB to store features (Heather)
+- [x] Ideal number of clusters? (Jiaqi)
+- [ ] Replace unknown words with "random" words for Word2Vec (Sush)
 
 #### Advanced 
 - [ ] Parsing
