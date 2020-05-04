@@ -15,7 +15,7 @@
 # [START gae_python37_app]
 import mongo_operations as m
 from flask import Flask, render_template, request, Response, jsonify
-import sqlalchemy
+# import sqlalchemy
 import json
 import logging
 
