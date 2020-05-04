@@ -32,6 +32,7 @@ class Features:
     mongo = m.MongoDB(db)
     self.queries={}
     self.emb={}
+    self.parsed_queries={}
 
     # mongodb keys: 
     # dict_keys(['_id', 'queryNum', 'questionId', 'variantId', 
@@ -45,15 +46,8 @@ class Features:
     for i in mongo.read_queries({}):
       self.emb[i['queryNum']]=i[emb_type]
       self.queries[i['queryNum']]=[i['variantId'], i['rawQueryContent']]
+      self.parsed_queries[i['queryNum']]=[i['variantId'], i['parsedRemovedQuery']]
 
-
-  def get_parsed_queries(self):
-    mongo = m.MongoDB(db)
-    queries={}
-    for i in mongo.read_queries({}):
-      queries[int(i['queryNum'])]=[i['variantId'], i['parsedRemovedQuery']]
-
-    return queries  
 
   '''
     Clustering algorithms from scikit-learn:
@@ -206,9 +200,10 @@ class Features:
 
   def to_JSON(self, all_labels, all_clusters, q_type):
     
+
     queries=self.queries
     if q_type=='parsed':
-      queries=get_parsed_queries()
+      queries=self.parsed_queries
 
     json_queries={}
     for idx, v in enumerate(all_labels):
