@@ -67,6 +67,13 @@ class MySQLDB:
 		result = self.mycursor.fetchall()
 		return result
 
+	# added for new PL queries table 
+	def get_question_ids(self):
+		sql="SELECT variantID FROM `Queries` GROUP BY variantID"
+		self.mycursor.execute(sql)
+		result = self.mycursor.fetchall()
+		return result
+
 	# updates a particular query by id
 	def update_query_by_id(self, queryid, query):
 		sql = "UPDATE `hw1` SET `query`=%s WHERE `queryid`=%s"
@@ -113,3 +120,5 @@ class MySQLDB:
 		self.conn.commit()
 		print("Deleted All queries in hw1 for questionID= ", questionid)
 		return
+
+
