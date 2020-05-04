@@ -176,13 +176,17 @@ class Features:
       clustering=""
       if len(data) > 1: 
         if name =="kmeans": 
-          clustering=self.kmeans(data, n_clusters)
+          # need to make sure queries are > n_clusters; otherwise, assign all to one cluster
+          if len(data) > n_clusters:
+            clustering=self.kmeans(data, n_clusters)
+          else:
+            clustering=np.asarray(np.zeros(len(data)))
         elif name=="mean_shift":
           clustering=self.mean_shift(data)
         elif name=="agglomerative":
           clustering=self.agglom(data, dist, link)
       else:
-        clustering = np.asarray([1])
+        clustering = np.asarray([0])
       
       try:
         score = silhouette_score(data, clustering)
@@ -227,24 +231,32 @@ class Features:
 
     return json.dumps(json_queries)  
 
+
+
+  '''
+    Main function 
+    Input: 
+      - name = string, type of algo (agglomerative, kmeans, or mean_shift)
+      - n_clusters = numeric. used for kmeans...will automatically exclude 
+        the questions with fewer queries than n_clusters
+      - dist = float, used for agglomerative clustering.
+      - link = string (ward, complete, minimum, average)
+      - emb_type = string (representing the embeddingcolumn in MongoDB)
+      - q_type = string (original or parsed). type of queries to return in JSON
+      - printing= boolean, for debug statements
+
+
+
+  '''
+
   def cluster(self, name='agglomerative', n_clusters=6, dist=0.35, link='ward', 
-    q_type='original', printing=False, emb_type='embedding'): 
+    q_type='original', emb_type='embedding', printing=False): 
 
 
     # queries=self.queries
     # emb = self.emb
 
-    if printing: 
-      print("Finished retrieving queries and embeddings...")
-
     all_labels, all_clusters=self.get_all_clusters(name, n_clusters, dist, link)
-
-    if printing:
-      print("Finished clustering...")
-
-    if q_type == 'parsed':
-      queries=get_parsed_queries()
-
 
     my_json = self.to_JSON(all_labels, all_clusters, q_type)
 
