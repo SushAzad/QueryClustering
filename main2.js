@@ -100,6 +100,8 @@ function drawClusterGraph(data, fullWidth, fullHeight) {
 		console.log("Clicked " + d);
 		let sidebar = document.getElementById('allcluster');
 		sidebar.innerHTML = '';
+		let numQueries = document.createTextNode("Cluster " + d.category + " has " + queriesByCluster[d.category].length + " queries");
+		sidebar.appendChild(numQueries);
 		console.log(queriesByCluster);
 		for(let q of queriesByCluster[d.category]) {
 			console.log(q);
