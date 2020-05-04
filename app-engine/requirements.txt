@@ -1,3 +1,6 @@
 Flask==1.1.1
 PyMongo==3.10.1
 Flask-PyMongo
+gunicorn
+numpy
+sklearn
