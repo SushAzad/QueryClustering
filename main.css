@@ -1,0 +1,24 @@
+#allcluster {
+	top: 0;
+	right: 0;
+	height: 100%;
+	width: 300px;
+	overflow-y: scroll;
+	position: absolute;
+	padding: 12px;
+
+}
+
+.cards {
+	padding: 10px;
+	margin: 10px;
+	border: 5px solid black;
+	border-radius: 25px;
+}
+
+.tooltip {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 500px;
+}
