@@ -11,8 +11,8 @@ async function fetchAndDraw(mode) {
 	//}
 
 	//axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-	const requestResult = await axios.get("getClusters?name=" + mode);
-	//const requestResult = await axios.get('agglomerative_0.25_ward_keyword_skipgram_clusters.json');
+	//const requestResult = await axios.get("getClusters?name=" + mode);
+	const requestResult = await axios.get('agglomerative_0.25_ward_keyword_skipgram_clusters.json');
 
 	console.log("Got data");
 	//console.log(requestResult.data);
@@ -169,10 +169,10 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	    })
 	    .merge(u)
 	    .attr('cx', function(d) {
-	      return d.x;
+	      return d.x = Math.max(d.radius, Math.min(width - d.radius, d.x));
 	    })
 	    .attr('cy', function(d) {
-	      return d.y;
+	      return Math.max(d.radius, Math.min(height - d.radius, d.y));
 	    })
 	    .on("mouseover", mouseover)
 	    .on("mousemove", mousemove)
@@ -183,12 +183,14 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 
 	let updateNodes = function(data) {
 		nodes = [];
+		simulation.nodes(nodes);
+	  	simulation.alpha(1).restart();
 
 		queriesByCluster = {};
 
 		for (let i in data) {
 			// make list of queries
-			const queryList = data[i].map(x => x['query'][1]);
+			const queryList = data[i].map(x => x['query']);
 			queriesByCluster[i] = queryList;
 			console.log(i + ": " + queryList);
 

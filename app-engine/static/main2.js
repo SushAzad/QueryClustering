@@ -158,7 +158,8 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	   console.log("Current nodes: " + nodes);
 
 	  //u.exit().transition().attr("r", 0).remove();
-	  u.exit().remove();
+	  u.exit()..attr("r", 0).remove();
+
 	  u.enter()
 	    .append('circle')
 	    .attr('r', function(d) {
@@ -169,10 +170,10 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	    })
 	    .merge(u)
 	    .attr('cx', function(d) {
-	      return d.x;
+	      return d.x = Math.max(d.radius, Math.min(width - d.radius, d.x));
 	    })
 	    .attr('cy', function(d) {
-	      return d.y;
+	      return Math.max(d.radius, Math.min(height - d.radius, d.y));
 	    })
 	    .on("mouseover", mouseover)
 	    .on("mousemove", mousemove)
@@ -183,6 +184,8 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 
 	let updateNodes = function(data) {
 		nodes = [];
+		simulation.nodes(nodes);
+	  	simulation.alpha(1).restart();
 
 		queriesByCluster = {};
 
