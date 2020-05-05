@@ -2,23 +2,114 @@ async function init() {
 	await fetchAndDraw('agglomerative');
 }
 
-async function fetchAndDraw(mode) {
-	//let config = {
-	//	proxy: {
-	//		host: 'https://sage-surfer-222619.appspot.com',
-	//		port: 8080
-	//	}
-	//}
-
-	//axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+async function fetchAndDraw(mode, n_clusters, dist, link) {
 	//const requestResult = await axios.get("getClusters?name=" + mode);
-	const requestResult = await axios.get("https://sage-surfer-222619.appspot.com/getClusters?name=" + mode);
+	let url = "https://sage-surfer-222619.appspot.com/getClusters?name=" + mode;
+	if (mode == 'kmeans' && n_clusters) {
+		url += "&n_clusters=" + n_clusters;
+	}
+	if (mode == 'agglomerative') {
+		console.log(link);
+		if (dist != undefined) {
+			url += "&dist=" + dist;
+		}
+		if (link != undefined) {
+			url += "&link=" + link;
+		}
+	}
+	console.log(url);
+	const requestResult = await axios.get(url);
 	//const requestResult = await axios.get('agglomerative_0.25_ward_keyword_skipgram_clusters.json');
 
 	console.log("Got data");
 	//console.log(requestResult.data);
 
 	drawClusterGraph(requestResult.data, mode, 600, 600);
+	let opt = document.getElementById('options');
+	opt.innerHTML = '';
+	if (mode == 'kmeans') {
+		let label = document.createElement('label');
+		label.innerHTML = 'Num of Clusters: ';
+		label.for = 'n_clusters';
+		let input = document.createElement('input');
+		input.id = 'n_clusters';
+		input.name = 'n_clusters';
+		input.type = "number";
+		if (n_clusters) {
+			input.value = n_clusters;
+		}
+		input.addEventListener("keyup", function(e) {
+			let box = document.getElementById('n_clusters').value;
+			if (e.keyCode === 13) {
+				// Enter key
+				e.preventDefault();
+				console.log(box);
+				fetchAndDraw(mode, box);
+			}
+		});
+		opt.appendChild(label);
+		opt.appendChild(input);
+	} else if (mode == 'agglomerative') {
+		// dist options
+		let label = document.createElement('label');
+		label.innerHTML = 'Distance: ';
+		label.for = 'dist';
+		let input = document.createElement('input');
+		input.id = 'dist';
+		input.name = 'dist';
+		input.type = "number";
+		if (dist != undefined) {
+			input.value = dist;
+		}
+		input.addEventListener("keyup", function(e) {
+			let box = document.getElementById('dist').value;
+			if (e.keyCode === 13) {
+				// Enter key
+				e.preventDefault();
+				let link = document.getElementById('link').value;
+				//console.log(box, link);
+
+				if (link != undefined) {
+					fetchAndDraw(mode, undefined, box, link);
+				} else {
+					fetchAndDraw(mode, undefined, box);
+				}
+			}
+		});
+		opt.appendChild(label);
+		opt.appendChild(input);
+
+		// link options
+		let label2 = document.createElement('label');
+		label2.innerHTML = 'Link: ';
+		label2.for = 'link';
+		let input2 = document.createElement('select');
+		input2.id = 'link';
+		input2.name = 'link';
+		
+		let options = ['ward', 'complete', 'minimum', 'average'];
+		for (const val of options) {
+			var option = document.createElement('option');
+			option.value = val;
+			option.text = val;
+			input2.appendChild(option);
+		}
+
+		input2.onchange = function () {
+			let param = document.getElementById('link').value;
+			//let param = elem.options[elem.selectedIndex].text;
+			//console.log(param, dist);
+			let dist = document.getElementById('dist').value;
+
+			if (dist == undefined) {
+				fetchAndDraw(mode, undefined, dist, param);
+			} else {
+				fetchAndDraw(mode, undefined, undefined, param);
+			}
+		}
+		opt.appendChild(label2);
+		opt.appendChild(input2);
+	}
 }
 
 function drawClusterGraph(data, mode, fullWidth, fullHeight) {
@@ -64,7 +155,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 		//}
 
 		var questionid = d3.select(this).property('value');
-		console.log(data[questionid]);
+		//console.log(data[questionid]);
 		console.log("Clusters for Question " + questionid);
 		updateNodes(data[questionid]);
 	};
@@ -133,9 +224,9 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 		sidebar.innerHTML = '';
 		let numQueries = document.createTextNode("Cluster " + d.category + " has " + queriesByCluster[d.category].length + " querie(s)");
 		sidebar.appendChild(numQueries);
-		console.log(queriesByCluster);
+		//console.log(queriesByCluster);
 		for(let q of queriesByCluster[d.category]) {
-			console.log(q);
+			//console.log(q);
 			let card = document.createElement('div');
 			card.className = 'cards';
 			let content = document.createTextNode(q);
@@ -215,7 +306,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 			// make list of queries
 			const queryList = data[i].map(x => x['query']);
 			queriesByCluster[i] = queryList;
-			console.log(i + ": " + queryList);
+			//console.log(i + ": " + queryList);
 
 			nodes.push({'radius': Math.sqrt(queryList.length * 100), 'category': i, 'query': queryList[0]});
 		}
