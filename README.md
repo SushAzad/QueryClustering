@@ -56,17 +56,17 @@ The embeddings will be stored in a pickle file called 'NewQueryEmbeddings'. When
 - [x] Meet with Abdu to finalize criteria--Sush (what would he want queries to be clustered by?)
 - [x] Get embeddings for raw data and keywords (Sush)
 - [x] Cluster raw data vs. keywords (Jiaqi)
-- [ ] Implement parsing (Heather)
+- [x] Implement parsing (Heather)
 - [ ] Get additional features, i.e. count vector (Jiaqi)
 - [x] Create MongoDB to store features (Heather)
 - [x] Ideal number of clusters? (Jiaqi)
 - [ ] Replace unknown words with "random" words for Word2Vec (Sush)
 
 #### Advanced 
-- [ ] Parsing
-	- [ ] Remove alias (Products as P, Products P)
+- [x] Parsing
+	- [x] Remove alias (Products as P, Products P)
 	- [ ] Map all subqueries to the same 
-- [ ] Display queries and clusters on front end 
+- [x] Display queries and clusters on front end 
 
 
 TO-DO:
