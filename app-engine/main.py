@@ -63,6 +63,10 @@ def getJSONDumps():
 def vizualise():
     return render_template('viz.html')
 
+@app.route('/test')
+def ugh():
+    return render_template('index.html')
+
 @app.route('/getClusters')
 def callCluster():
     #SampleURL#

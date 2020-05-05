@@ -1,5 +1,6 @@
 async function init() {
-	const requestResult = await axios.get("agglomerative_0.25_ward_keyword_skipgram_clusters.json");
+	const requestResult = await axios.get("/static/agglomerative_0.25_ward_keyword_skipgram_clusters.json");
+	//const requestResult = await axios.get("{{ url_for('static', filename='agglomerative_0.25_ward_keyword_skipgram_clusters.json') }}");
 
 	//console.log(requestResult.data);
 
