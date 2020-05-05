@@ -18,10 +18,12 @@ from flask import Flask, render_template, request, Response, jsonify
 import json
 import logging
 import clustering as clus
+from flask_cors import CORS
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 app = Flask(__name__)
+CORS(app)
 logger = logging.getLogger()
 features = clus.Features() 
 
@@ -100,9 +102,15 @@ def callCluster():
         print("printing", printing)
     a = features.cluster(**{k: v for k, v in kwargs.items() if v is not None})
     # print("Type!", type(a))
-    obj = json.loads(a)
+    response = json.loads(a)
+    #response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
     # print("Type after parsing!", type(obj))
-    return obj
+    # response = app.response_class(
+    #     response=obj,
+    #     status=200,
+    #     mimetype='application/json'
+    # )
 
 @app.route('/')
 def hello():

@@ -8,4 +8,5 @@ pymysql
 configparser
 dnspython
 pymongo[tls,srv]
+flask_cors
     
