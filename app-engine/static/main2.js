@@ -1,14 +1,29 @@
 async function init() {
-	const requestResult = await axios.get("/static/agglomerative_0.25_ward_keyword_skipgram_clusters.json");
-	//const requestResult = await axios.get("{{ url_for('static', filename='agglomerative_0.25_ward_keyword_skipgram_clusters.json') }}");
-
-	//console.log(requestResult.data);
-
-	drawClusterGraph(requestResult.data, 600, 600);
+	await fetchAndDraw('agglomerative');
 }
 
-function drawClusterGraph(data, fullWidth, fullHeight) {
+async function fetchAndDraw(mode) {
+	//let config = {
+	//	proxy: {
+	//		host: 'https://sage-surfer-222619.appspot.com',
+	//		port: 8080
+	//	}
+	//}
+
+	//axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+	const requestResult = await axios.get("getClusters?name=" + mode);
+	//const requestResult = await axios.get('agglomerative_0.25_ward_keyword_skipgram_clusters.json');
+
+	console.log("Got data");
+	//console.log(requestResult.data);
+
+	drawClusterGraph(requestResult.data, mode, 600, 600);
+}
+
+function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	
+	document.getElementById('graph').innerHTML = '';
+
 	//var ctx = document.getElementById('myChart');
 	//var currentChart;
 	const margin = { top: 20, bottom: 40, left: 50, right: 20 };
@@ -51,6 +66,20 @@ function drawClusterGraph(data, fullWidth, fullHeight) {
 		console.log(data[questionid]);
 		console.log("Clusters for Question " + questionid);
 		updateNodes(data[questionid]);
+	};
+
+	var dropdownModeChange = function() {
+		//if(currentChart) {
+		//	currentChart.destroy();
+		//}
+
+		var mode = d3.select(this).property('value');
+		console.log(mode);
+
+		fetchAndDraw(mode);
+		//console.log(data[questionid]);
+		//console.log("Clusters for Question " + questionid);
+		//updateNodes(data[questionid]);
 	};
 
 	//select.onchange = clusterDropDownChange;
@@ -101,7 +130,7 @@ function drawClusterGraph(data, fullWidth, fullHeight) {
 		console.log("Clicked " + d);
 		let sidebar = document.getElementById('allcluster');
 		sidebar.innerHTML = '';
-		let numQueries = document.createTextNode("Cluster " + d.category + " has " + queriesByCluster[d.category].length + " queries");
+		let numQueries = document.createTextNode("Cluster " + d.category + " has " + queriesByCluster[d.category].length + " querie(s)");
 		sidebar.appendChild(numQueries);
 		console.log(queriesByCluster);
 		for(let q of queriesByCluster[d.category]) {
@@ -197,6 +226,25 @@ function drawClusterGraph(data, fullWidth, fullHeight) {
         .text(function (d) {
             return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
         });
+
+    var dropdown_mode = d3.select("#graph")
+        .insert("select", "svg")
+        .on("change", dropdownModeChange);
+
+    var mode_list = ['agglomerative', 'kmeans', 'mean_shift'];
+    dropdown_mode.selectAll("option")
+        .data(mode_list)
+      .enter().append("option")
+        .attr("value", function (d) { return d; })
+        .text(function (d) {
+            return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+        }).each(function(d) {
+        	let elem = d3.select(this).property('value');
+        	if (elem == mode) {
+        		d3.select(this).attr("selected", function (d) { return true; });
+        	}
+        });
+        
 
     updateNodes(data[firstQuestion]);
 
