@@ -4,4 +4,8 @@ Flask-PyMongo
 gunicorn
 numpy
 sklearn
+pymysql
+configparser
+dnspython
+pymongo[tls,srv]
     
