@@ -76,10 +76,10 @@ def callCluster():
     # features = clus.Features() 
     kwargs=dict(name=None, n_clusters=None, dist=None, link=None, 
     q_type=None, emb_type=None, printing=None)
-    if 'algo' in request.args:
-        algo = request.args.get('algo')
-        kwargs['name']=algo
-        print("algo", algo)
+    if 'name' in request.args:
+        name = request.args.get('name')
+        kwargs['name']=name
+        print("name", name)
     if 'n_clusters' in request.args:
         n_clusters = int(request.args.get('n_clusters'))
         kwargs['n_clusters']=n_clusters
