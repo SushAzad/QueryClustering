@@ -58,6 +58,8 @@ async function fetchAndDraw(mode, n_clusters, dist, link) {
 		input.id = 'dist';
 		input.name = 'dist';
 		input.type = "number";
+		input.min = 0;
+		input.step = 'any';
 		if (dist != undefined) {
 			input.value = dist;
 		}
@@ -87,11 +89,14 @@ async function fetchAndDraw(mode, n_clusters, dist, link) {
 		input2.id = 'link';
 		input2.name = 'link';
 		
-		let options = ['ward', 'complete', 'minimum', 'average'];
+		let options = ['ward', 'complete', 'single', 'average'];
 		for (const val of options) {
 			var option = document.createElement('option');
 			option.value = val;
 			option.text = val;
+			if (link == val) {
+				option.selected = 'true';
+			}
 			input2.appendChild(option);
 		}
 
@@ -101,7 +106,7 @@ async function fetchAndDraw(mode, n_clusters, dist, link) {
 			//console.log(param, dist);
 			let dist = document.getElementById('dist').value;
 
-			if (dist == undefined) {
+			if (dist != undefined) {
 				fetchAndDraw(mode, undefined, dist, param);
 			} else {
 				fetchAndDraw(mode, undefined, undefined, param);
