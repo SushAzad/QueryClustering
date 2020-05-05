@@ -92,6 +92,9 @@ async function fetchAndDraw(mode, n_clusters, dist, link) {
 			var option = document.createElement('option');
 			option.value = val;
 			option.text = val;
+			if (link == val) {
+				option.selected = 'true';
+			}
 			input2.appendChild(option);
 		}
 
@@ -101,7 +104,7 @@ async function fetchAndDraw(mode, n_clusters, dist, link) {
 			//console.log(param, dist);
 			let dist = document.getElementById('dist').value;
 
-			if (dist == undefined) {
+			if (dist != undefined) {
 				fetchAndDraw(mode, undefined, dist, param);
 			} else {
 				fetchAndDraw(mode, undefined, undefined, param);
