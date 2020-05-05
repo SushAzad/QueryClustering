@@ -89,7 +89,7 @@ async function fetchAndDraw(mode, n_clusters, dist, link) {
 		input2.id = 'link';
 		input2.name = 'link';
 		
-		let options = ['ward', 'complete', 'minimum', 'average'];
+		let options = ['ward', 'complete', 'single', 'average'];
 		for (const val of options) {
 			var option = document.createElement('option');
 			option.value = val;
