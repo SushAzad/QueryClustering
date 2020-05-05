@@ -58,6 +58,8 @@ async function fetchAndDraw(mode, n_clusters, dist, link) {
 		input.id = 'dist';
 		input.name = 'dist';
 		input.type = "number";
+		input.min = 0;
+		input.step = 'any';
 		if (dist != undefined) {
 			input.value = dist;
 		}
