@@ -12,7 +12,8 @@ async function fetchAndDraw(mode) {
 
 	//axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 	//const requestResult = await axios.get("getClusters?name=" + mode);
-	const requestResult = await axios.get('agglomerative_0.25_ward_keyword_skipgram_clusters.json');
+	const requestResult = await axios.get("https://sage-surfer-222619.appspot.com/getClusters?name=" + mode);
+	//const requestResult = await axios.get('agglomerative_0.25_ward_keyword_skipgram_clusters.json');
 
 	console.log("Got data");
 	//console.log(requestResult.data);
@@ -144,7 +145,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	}
 
 	let simulation = d3.forceSimulation(nodes)
-	  .force('charge', d3.forceManyBody().strength(2))
+	  .force('charge', d3.forceManyBody().strength(5))
 	  .force('center', d3.forceCenter(width/2, height/2))
 	  .force('collision', d3.forceCollide().radius(function(d) {
 	    return d.radius;
@@ -162,6 +163,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	  u.enter()
 	    .append('circle')
 	    .attr('r', function(d) {
+	   		//console.log(d.radius);
 	      return d.radius;
 	    })
 	    .style('fill', function(d) {
@@ -179,7 +181,28 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	    .on("mouseleave", mouseleave)
 	    .on("click", mouseclick);
 
+	    u.transition()
+		    .duration(0.5)
+		    .attr('r', function(d) {
+		   		//console.log(d.radius);
+		      return d.radius;
+		    })
+		    .attr('cx', function(d) {
+		      return d.x = Math.max(d.radius, Math.min(width - d.radius, d.x));
+		    })
+		    .attr('cy', function(d) {
+		      return Math.max(d.radius, Math.min(height - d.radius, d.y));
+		    })
+		    .style('fill', function(d) {
+		      return colorScale(d.category);
+		    })
+	    //.on("mouseover", mouseover)
+	    //.on("mousemove", mousemove)
+	    //.on("mouseleave", mouseleave);
+
 	}
+
+	
 
 	let updateNodes = function(data) {
 		nodes = [];
@@ -194,7 +217,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 			queriesByCluster[i] = queryList;
 			console.log(i + ": " + queryList);
 
-			nodes.push({'radius': queryList.length * 3, 'category': i, 'query': queryList[0]});
+			nodes.push({'radius': Math.sqrt(queryList.length * 100), 'category': i, 'query': queryList[0]});
 		}
 		// make color scale
 		colorScale = d3.scaleLinear().domain([0, nodes.length]).range(colorRange);
