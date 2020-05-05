@@ -59,6 +59,10 @@ def getJSONDumps():
     		extract_data[key] = data[key]
     return jsonify(extract_data)
 
+@app.route('/viz')
+def vizualise():
+    return render_template('viz.html')
+
 @app.route('/getClusters')
 def callCluster():
     #SampleURL#

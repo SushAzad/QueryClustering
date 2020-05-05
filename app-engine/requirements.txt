@@ -4,3 +4,4 @@ Flask-PyMongo
 gunicorn
 numpy
 sklearn
+    

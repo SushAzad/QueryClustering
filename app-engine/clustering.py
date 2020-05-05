@@ -6,7 +6,7 @@ from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics import silhouette_score
 from sklearn import metrics
 
-import crud_operations as co
+# import crud_operations as co
 import mongo_operations as m
 import json
 
