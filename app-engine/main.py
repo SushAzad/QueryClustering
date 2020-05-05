@@ -98,7 +98,7 @@ def callCluster():
         print("emb_type", emb_type)
     if 'link' in request.args:
         link = request.args.get('link')
-        kwargs['link']=emb_type
+        kwargs['link']=link
         print("link", link)
     if 'printing' in request.args:
         printing = request.args.get('printing')
