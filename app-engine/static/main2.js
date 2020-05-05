@@ -188,7 +188,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 
 		for (let i in data) {
 			// make list of queries
-			const queryList = data[i].map(x => x['query'][1]);
+			const queryList = data[i].map(x => x['query']);
 			queriesByCluster[i] = queryList;
 			console.log(i + ": " + queryList);
 
