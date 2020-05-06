@@ -30,6 +30,7 @@ class Features:
     # connect to mongo 
     self.mongo = m.MongoDB(db)
     self.queries={}
+    self.curr_emb_type = emb_type
     self.emb={}
     self.parsed_queries={}
 
@@ -258,10 +259,11 @@ class Features:
 
 
     # queries=self.queries
-
-
-    getEmbeddings(emb_type)
-    all_labels, all_clusters=self.get_all_clusters(name, n_clusters, dist, link, emb_type)
+    if emb_type != self.curr_emb_type:
+      getEmbeddings(emb_type)
+      self.curr_emb_type = emb_type
+    
+    all_labels, all_clusters=self.get_all_clusters(name, n_clusters, dist, link)
 
     my_json = self.to_JSON(all_labels, all_clusters, q_type)
 
