@@ -2,7 +2,7 @@ async function init() {
 	await fetchAndDraw('agglomerative');
 }
 
-async function fetchAndDraw(mode, n_clusters, dist, link) {
+async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
 	//const requestResult = await axios.get("getClusters?name=" + mode);
 	let url = "getClusters?name=" + mode;
 	if (mode == 'kmeans' && n_clusters) {
@@ -17,6 +17,12 @@ async function fetchAndDraw(mode, n_clusters, dist, link) {
 			url += "&link=" + link;
 		}
 	}
+
+	//@embedding changes @sush, plus i added the parameter
+	if (embedding != undefined) {
+		url += "&emb_type=" + embedding;
+	}
+
 	console.log(url);
 	const requestResult = await axios.get(url);
 	//const requestResult = await axios.get('agglomerative_0.25_ward_keyword_skipgram_clusters.json');
@@ -71,10 +77,12 @@ async function fetchAndDraw(mode, n_clusters, dist, link) {
 				let link = document.getElementById('link').value;
 				//console.log(box, link);
 
+				//sush @embedding changes here 
 				if (link != undefined) {
-					fetchAndDraw(mode, undefined, box, link);
+					fetchAndDraw(mode, undefined, box, link, embedding);
 				} else {
-					fetchAndDraw(mode, undefined, box);
+					//fetchAndDraw(mode, undefined, box);
+					fetchAndDraw(mode, undefined, box, undefined, embedding);
 				}
 			}
 		});
@@ -105,11 +113,11 @@ async function fetchAndDraw(mode, n_clusters, dist, link) {
 			//let param = elem.options[elem.selectedIndex].text;
 			//console.log(param, dist);
 			let dist = document.getElementById('dist').value;
-
+			//sush @embedding changes here
 			if (dist != undefined) {
-				fetchAndDraw(mode, undefined, dist, param);
+				fetchAndDraw(mode, undefined, dist, param, embedding);
 			} else {
-				fetchAndDraw(mode, undefined, undefined, param);
+				fetchAndDraw(mode, undefined, undefined, param, embedding);
 			}
 		}
 		opt.appendChild(label2);
@@ -178,6 +186,12 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 		//console.log("Clusters for Question " + questionid);
 		//updateNodes(data[questionid]);
 	};
+
+	var embedding_change = function() {
+		//@embedding change 
+		//@sush
+
+	}
 
 	//select.onchange = clusterDropDownChange;
 
@@ -365,6 +379,30 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
         		d3.select(this).attr("selected", function (d) { return true; });
         	}
         });
+
+
+        // @embedding changes @sush 
+		    // the next two chunks 
+		    var dropdown_emb = d3.select("#graph")
+		      .insert("select", "svg")
+		      .on("change", embedding_change);
+
+
+		    var emb_list=['embedding', 'raw_embedding', 'key_embedding']
+			  dropdown_emb.selectAll("option")
+			      .data(emb_list)
+			    .enter().append("option")
+			      .attr("value", function (d) { return d; })
+			      .text(function (d) {
+			          return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+			      }).each(function(d) {
+			      	let elem = d3.select(this).property('value');
+			      	if (elem == mode) {
+			      		d3.select(this).attr("selected", function (d) { return true; });
+			      	}
+			      });
+
+
         
 
     updateNodes(data[firstQuestion]);
