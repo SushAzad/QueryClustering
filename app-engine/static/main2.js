@@ -4,6 +4,8 @@ async function init() {
 
 async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
 	//const requestResult = await axios.get("getClusters?name=" + mode);
+	console.log(mode, n_clusters, dist, link, embedding)
+
 	let url = "getClusters?name=" + mode;
 	if (mode == 'kmeans' && n_clusters) {
 		url += "&n_clusters=" + n_clusters;
@@ -183,7 +185,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 		
 		console.log(mode);
 
-		fetchAndDraw(mode);
+		fetchAndDraw(mode, undefined, undefined, undefined, emb);
 		//console.log(data[questionid]);
 		//console.log("Clusters for Question " + questionid);
 		//updateNodes(data[questionid]);
@@ -198,7 +200,8 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 		var mode = d3.select('#mode_dropdown').property('value');
 		console.log(emb, mode);
 
-		fetchAndDraw(mode);
+		// fetchAndDraw(mode);
+		fetchAndDraw(mode, undefined, undefined, undefined, emb);
 
 	}
 
@@ -356,10 +359,12 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	//console.log(colorScale);
 	//let nodes = data[firstQuestion];
 	//console.log("Nodes: " + nodes);
+
+	updateNodes(data[firstQuestion]);
 	
 
 	var question_list = Object.keys(data);
-	var dropdown_question = d3.select("#graph")
+	var dropdown_question = d3.select("#main_menu")
         .insert("select", "svg")
         .attr("id", "question_dropdown")
         .on("change", dropdownQuestionChange);
@@ -372,7 +377,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
             return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
         });
 
-    var dropdown_mode = d3.select("#graph")
+    var dropdown_mode = d3.select("#main_menu")
         .insert("select", "svg")
         .attr("id", "mode_dropdown")
         .on("change", dropdownModeChange);
@@ -394,7 +399,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 
         // @embedding changes @sush 
 		    // the next two chunks 
-		    var dropdown_emb = d3.select("#graph")
+		    var dropdown_emb = d3.select("#main_menu")
 		      .insert("select", "svg")
 		      .attr("id", "embedding_dropdown")
 		      .on("change", embedding_change);
@@ -413,11 +418,6 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 			      		d3.select(this).attr("selected", function (d) { return true; });
 			      	}
 			      });
-
-
-        
-
-    updateNodes(data[firstQuestion]);
 
 }
 
