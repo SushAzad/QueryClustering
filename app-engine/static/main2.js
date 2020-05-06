@@ -179,6 +179,8 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 		//}
 
 		var mode = d3.select(this).property('value');
+		var emb = d3.select('#embedding_dropdown').property('value');
+		
 		console.log(mode);
 
 		fetchAndDraw(mode);
@@ -190,6 +192,13 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	var embedding_change = function() {
 		//@embedding change 
 		//@sush
+
+
+		var emb = d3.select(this).property('value');
+		var mode = d3.select('#mode_dropdown').property('value');
+		console.log(emb, mode);
+
+		fetchAndDraw(mode);
 
 	}
 
@@ -352,6 +361,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	var question_list = Object.keys(data);
 	var dropdown_question = d3.select("#graph")
         .insert("select", "svg")
+        .attr("id", "question_dropdown")
         .on("change", dropdownQuestionChange);
 
     dropdown_question.selectAll("option")
@@ -364,6 +374,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 
     var dropdown_mode = d3.select("#graph")
         .insert("select", "svg")
+        .attr("id", "mode_dropdown")
         .on("change", dropdownModeChange);
 
     var mode_list = ['agglomerative', 'kmeans', 'mean_shift'];
@@ -385,6 +396,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 		    // the next two chunks 
 		    var dropdown_emb = d3.select("#graph")
 		      .insert("select", "svg")
+		      .attr("id", "embedding_dropdown")
 		      .on("change", embedding_change);
 
 
