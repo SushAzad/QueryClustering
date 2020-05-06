@@ -73,8 +73,8 @@ class Features:
     clusters = km.labels_.tolist()
     x = np.asarray(clusters)
     nc=self.get_num_clusters(x)
-    print("Distribution of clusters: " + str(len(nc)))
-    print(nc)
+    # print("Distribution of clusters: " + str(len(nc)))
+    # print(nc)
 
     return x
 
@@ -84,8 +84,8 @@ class Features:
 
     x=clustering.labels_
     nc=self.get_num_clusters(x)
-    print("Distribution of clusters: " + str(len(nc)))
-    print(nc)
+    # print("Distribution of clusters: " + str(len(nc)))
+    # print(nc)
 
     return x
 
@@ -93,8 +93,8 @@ class Features:
     clustering = AgglomerativeClustering(n_clusters=None, distance_threshold=dist, linkage=link).fit(data)
     x=clustering.labels_
     nc=self.get_num_clusters(x)
-    print("Distribution of clusters: " + str(len(nc)))
-    print(nc)
+    # print("Distribution of clusters: " + str(len(nc)))
+    # print(nc)
 
     return x
 

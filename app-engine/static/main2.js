@@ -1,5 +1,5 @@
 async function init() {
-	await fetchAndDraw('agglomerative');
+	await fetchAndDraw('agglomerative', undefined, undefined, undefined, 'embedding');
 }
 
 async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
@@ -32,7 +32,7 @@ async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
 	console.log("Got data");
 	//console.log(requestResult.data);
 
-	drawClusterGraph(requestResult.data, mode, 600, 600);
+	drawClusterGraph(requestResult.data, mode, 600, 600, embedding);
 	// let opt = document.getElementById('options');
 	// opt.innerHTML = '';
 	if (mode=='kmeans') {
@@ -147,7 +147,7 @@ async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
 	
 }
 
-function drawClusterGraph(data, mode, fullWidth, fullHeight) {
+function drawClusterGraph(data, mode, fullWidth, fullHeight, embedding) {
 	
 	document.getElementById('graph').innerHTML = '';
 	document.getElementById('main_menu').innerHTML = '';
@@ -432,57 +432,58 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
       });
 
 
-    // embedding changes
-    // the next two chunks 
-    var dropdown_emb = d3.select("#main_menu")
-      .insert("select", "svg")
-      .attr("id", "embedding_dropdown")
-      .on("change", embedding_change);
+  // embedding changes
+  // the next two chunks 
+  var dropdown_emb = d3.select("#main_menu")
+    .insert("select", "svg")
+    .attr("id", "embedding_dropdown")
+    .on("change", embedding_change);
 
 
-    var emb_list=['embedding', 'raw_embedding', 'key_embedding']
-	  dropdown_emb.selectAll("option")
-	      .data(emb_list)
-	    .enter().append("option")
-	      .attr("value", function (d) { return d; })
-	      .text(function (d) {
-	          return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-	      }).each(function(d) {
-	      	let elem = d3.select(this).property('value');
-	      	if (elem == mode) {
-	      		d3.select(this).attr("selected", function (d) { return true; });
-	      	}
-	      });
+  var emb_list=['embedding', 'raw_embedding', 'key_embedding']
+  dropdown_emb.selectAll("option")
+      .data(emb_list)
+    .enter().append("option")
+      .attr("value", function (d) { return d; })
+      .text(function (d) {
+          return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+      }).each(function(d) {
+      	let elem = d3.select(this).property('value');
+      	if (elem == embedding) {
+      		d3.select(this).attr("selected", function (d) { return true; });
+      	}
+      });
 
 }
 
-		let button = document.getElementById('submit_button');
+let button = document.getElementById('submit_button');
 
-		button.addEventListener("click", function(e) {
+button.addEventListener("click", function(e) {
 
-			var mode = d3.select('#mode_dropdown').property('value');
-			var emb = d3.select('#embedding_dropdown').property('value');
+	var mode = d3.select('#mode_dropdown').property('value');
+	var emb = d3.select('#embedding_dropdown').property('value');
 
-			if (mode == 'agglomerative') {
-				let box = document.getElementById('dist').value;
+	if (mode == 'agglomerative') {
+		let box = document.getElementById('dist').value;
+		// e.preventDefault();
+		let link = document.getElementById('link').value;
+		//console.log(box, link);
 
-				// e.preventDefault();
-				let link = document.getElementById('link').value;
-				//console.log(box, link);
+		if (link != undefined) {
+			fetchAndDraw(mode, undefined, box, link, emb);
+		} else {
+			//fetchAndDraw(mode, undefined, box);
+			fetchAndDraw(mode, undefined, box, undefined, emb);
+		}
+		
+	} else if(mode == 'kmeans') { 
+		let box = document.getElementById('n_clusters').value;
+		fetchAndDraw(mode, box, undefined, undefined, emb);
 
-				if (link != undefined) {
-					fetchAndDraw(mode, undefined, box, link, emb);
-				} else {
-					//fetchAndDraw(mode, undefined, box);
-					fetchAndDraw(mode, undefined, box, undefined, emb);
-				}
-				
-			} else if(mode == 'kmeans') { 
-				let box = document.getElementById('n_clusters').value;
-				console.log(box);
-				fetchAndDraw(mode, box, undefined, undefined, emb);
-			}
-			
-		});
+	} else if(mode=='mean_shift') {
+		fetchAndDraw(mode, undefined, undefined, undefined, emb);
+	}
+	
+});
 
 document.onload = init();

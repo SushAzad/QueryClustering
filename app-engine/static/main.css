@@ -11,10 +11,15 @@ svg {
 	margin: 8px 0px;
 }
 
+#agglomerative_input input {
+	width: 127px;
+}
+
 select,
 #submit_button {
 	margin: 0px 15px 0px 0px ;
 	height: 25px;
+	width:120px;
 }
 
 #content {
