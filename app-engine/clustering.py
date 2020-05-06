@@ -28,8 +28,9 @@ class Features:
   def __init__(self, db='Queries', emb_type='embedding'):
 
     # connect to mongo 
-    mongo = m.MongoDB(db)
+    self.mongo = m.MongoDB(db)
     self.queries={}
+    self.curr_emb_type = emb_type
     self.emb={}
     self.parsed_queries={}
 
@@ -42,7 +43,7 @@ class Features:
     # get embeddings 
     # queryNum-->[variantID, queryText]
     # queryNum--> emb 
-    for i in mongo.read_queries({}):
+    for i in self.mongo.read_queries({}):
       self.emb[i['queryNum']]=i[emb_type]
       self.queries[i['queryNum']]=[i['variantId'], i['rawQueryContent']]
       self.parsed_queries[i['queryNum']]=[i['variantId'], i['parsedRemovedQuery']]
@@ -248,13 +249,20 @@ class Features:
 
   '''
 
+  def getEmbeddings(self, emb_type):
+    for i in self.mongo.read_queries({}):
+      self.emb[i['queryNum']]=i[emb_type]
+    
+
   def cluster(self, name='agglomerative', n_clusters=6, dist=0.35, link='ward', 
     q_type='original', emb_type='embedding', printing=False): 
 
 
     # queries=self.queries
-    # emb = self.emb
-
+    if emb_type != self.curr_emb_type:
+      getEmbeddings(emb_type)
+      self.curr_emb_type = emb_type
+    
     all_labels, all_clusters=self.get_all_clusters(name, n_clusters, dist, link)
 
     my_json = self.to_JSON(all_labels, all_clusters, q_type)
