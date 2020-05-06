@@ -220,7 +220,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 
     let colorScale = d3.scaleLinear().domain([0, nodes.length]).range(colorRange);
 
-    // create a tooltip
+  // create a tooltip
 	var Tooltip = d3.select("#graph")
 	    .append("div")
 	    .style("opacity", 0)
@@ -361,64 +361,63 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	//console.log("Nodes: " + nodes);
 
 	updateNodes(data[firstQuestion]);
-	
-
-	var question_list = Object.keys(data);
-	var dropdown_question = d3.select("#main_menu")
-        .insert("select", "svg")
-        .attr("id", "question_dropdown")
-        .on("change", dropdownQuestionChange);
-
-    dropdown_question.selectAll("option")
-        .data(question_list)
-      .enter().append("option")
-        .attr("value", function (d) { return d; })
-        .text(function (d) {
-            return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-        });
-
-    var dropdown_mode = d3.select("#main_menu")
-        .insert("select", "svg")
-        .attr("id", "mode_dropdown")
-        .on("change", dropdownModeChange);
-
-    var mode_list = ['agglomerative', 'kmeans', 'mean_shift'];
-    dropdown_mode.selectAll("option")
-        .data(mode_list)
-      .enter().append("option")
-        .attr("value", function (d) { return d; })
-        .text(function (d) {
-            return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-        }).each(function(d) {
-        	let elem = d3.select(this).property('value');
-        	if (elem == mode) {
-        		d3.select(this).attr("selected", function (d) { return true; });
-        	}
-        });
-
-
-        // @embedding changes @sush 
-		    // the next two chunks 
-		    var dropdown_emb = d3.select("#main_menu")
-		      .insert("select", "svg")
-		      .attr("id", "embedding_dropdown")
-		      .on("change", embedding_change);
-
-
-		    var emb_list=['embedding', 'raw_embedding', 'key_embedding']
-			  dropdown_emb.selectAll("option")
-			      .data(emb_list)
-			    .enter().append("option")
-			      .attr("value", function (d) { return d; })
-			      .text(function (d) {
-			          return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-			      }).each(function(d) {
-			      	let elem = d3.select(this).property('value');
-			      	if (elem == mode) {
-			      		d3.select(this).attr("selected", function (d) { return true; });
-			      	}
-			      });
 
 }
 
+var question_list = Object.keys(data);
+var dropdown_question = d3.select("#main_menu")
+      .insert("select", "svg")
+      .attr("id", "question_dropdown")
+      .on("change", dropdownQuestionChange);
+
+  dropdown_question.selectAll("option")
+      .data(question_list)
+    .enter().append("option")
+      .attr("value", function (d) { return d; })
+      .text(function (d) {
+          return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+      });
+
+var dropdown_mode = d3.select("#main_menu")
+    .insert("select", "svg")
+    .attr("id", "mode_dropdown")
+    .on("change", dropdownModeChange);
+
+var mode_list = ['agglomerative', 'kmeans', 'mean_shift'];
+dropdown_mode.selectAll("option")
+    .data(mode_list)
+  .enter().append("option")
+    .attr("value", function (d) { return d; })
+    .text(function (d) {
+        return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+    }).each(function(d) {
+    	let elem = d3.select(this).property('value');
+    	if (elem == mode) {
+    		d3.select(this).attr("selected", function (d) { return true; });
+    	}
+    });
+
+
+// @embedding changes @sush 
+// the next two chunks 
+var dropdown_emb = d3.select("#main_menu")
+  .insert("select", "svg")
+  .attr("id", "embedding_dropdown")
+  .on("change", embedding_change);
+
+
+var emb_list=['embedding', 'raw_embedding', 'key_embedding']
+dropdown_emb.selectAll("option")
+    .data(emb_list)
+  .enter().append("option")
+    .attr("value", function (d) { return d; })
+    .text(function (d) {
+        return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+    }).each(function(d) {
+    	let elem = d3.select(this).property('value');
+    	if (elem == mode) {
+    		d3.select(this).attr("selected", function (d) { return true; });
+    	}
+    });
+			      
 document.onload = init();
