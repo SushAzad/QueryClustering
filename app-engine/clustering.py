@@ -260,7 +260,7 @@ class Features:
 
     # queries=self.queries
     if emb_type != self.curr_emb_type:
-      getEmbeddings(emb_type)
+      self.getEmbeddings(emb_type)
       self.curr_emb_type = emb_type
     
     all_labels, all_clusters=self.get_all_clusters(name, n_clusters, dist, link)

@@ -160,7 +160,7 @@ async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
 function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	
 	document.getElementById('graph').innerHTML = '';
-
+	document.getElementById('main_menu').innerHTML = '';
 	//var ctx = document.getElementById('myChart');
 	//var currentChart;
 	const margin = { top: 20, bottom: 40, left: 50, right: 20 };
