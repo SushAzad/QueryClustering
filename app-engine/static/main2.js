@@ -46,15 +46,15 @@ async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
 		if (n_clusters) {
 			input.value = n_clusters;
 		}
-		input.addEventListener("keyup", function(e) {
-			let box = document.getElementById('n_clusters').value;
-			if (e.keyCode === 13) {
-				// Enter key
-				e.preventDefault();
-				console.log(box);
-				fetchAndDraw(mode, box);
-			}
-		});
+		// input.addEventListener("keyup", function(e) {
+		// 	let box = document.getElementById('n_clusters').value;
+		// 	if (e.keyCode === 13) {
+		// 		// Enter key
+		// 		e.preventDefault();
+		// 		console.log(box);
+		// 		fetchAndDraw(mode, box);
+		// 	}
+		// });
 		opt.appendChild(label);
 		opt.appendChild(input);
 	} else if (mode == 'agglomerative') {
@@ -71,23 +71,23 @@ async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
 		if (dist != undefined) {
 			input.value = dist;
 		}
-		input.addEventListener("keyup", function(e) {
-			let box = document.getElementById('dist').value;
-			if (e.keyCode === 13) {
-				// Enter key
-				e.preventDefault();
-				let link = document.getElementById('link').value;
-				//console.log(box, link);
+		// input.addEventListener("keyup", function(e) {
+		// 	let box = document.getElementById('dist').value;
+		// 	if (e.keyCode === 13) {
+		// 		// Enter key
+		// 		e.preventDefault();
+		// 		let link = document.getElementById('link').value;
+		// 		//console.log(box, link);
 
-				//sush @embedding changes here 
-				if (link != undefined) {
-					fetchAndDraw(mode, undefined, box, link, embedding);
-				} else {
-					//fetchAndDraw(mode, undefined, box);
-					fetchAndDraw(mode, undefined, box, undefined, embedding);
-				}
-			}
-		});
+				
+		// 		if (link != undefined) {
+		// 			fetchAndDraw(mode, undefined, box, link, embedding);
+		// 		} else {
+		// 			//fetchAndDraw(mode, undefined, box);
+		// 			fetchAndDraw(mode, undefined, box, undefined, embedding);
+		// 		}
+		// 	}
+		// });
 		opt.appendChild(label);
 		opt.appendChild(input);
 
@@ -124,6 +124,36 @@ async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
 		}
 		opt.appendChild(label2);
 		opt.appendChild(input2);
+
+
+		let button = document.createElement('input');
+		button.setAttribute("type", "submit");
+		button.setAttribute("id", "submit_button");
+		button.setAttribute("value", "Submit");
+		opt.appendChild(button);
+
+		button.addEventListener("click", function(e) {
+			if (mode == 'agglomerative') {
+				let box = document.getElementById('dist').value;
+				
+				// e.preventDefault();
+				let link = document.getElementById('link').value;
+				//console.log(box, link);
+
+				if (link != undefined) {
+					fetchAndDraw(mode, undefined, box, link, embedding);
+				} else {
+					//fetchAndDraw(mode, undefined, box);
+					fetchAndDraw(mode, undefined, box, undefined, embedding);
+				}
+				
+			} else if(mode == 'kmeans') { 
+				let box = document.getElementById('n_clusters').value;
+				console.log(box);
+				fetchAndDraw(mode, box, undefined, undefined, embedding);
+			}
+			
+		});
 	}
 }
 
@@ -377,47 +407,47 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
             return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
         });
 
-    var dropdown_mode = d3.select("#main_menu")
-        .insert("select", "svg")
-        .attr("id", "mode_dropdown")
-        .on("change", dropdownModeChange);
+  var dropdown_mode = d3.select("#main_menu")
+      .insert("select", "svg")
+      .attr("id", "mode_dropdown")
+      .on("change", dropdownModeChange);
 
-    var mode_list = ['agglomerative', 'kmeans', 'mean_shift'];
-    dropdown_mode.selectAll("option")
-        .data(mode_list)
-      .enter().append("option")
-        .attr("value", function (d) { return d; })
-        .text(function (d) {
-            return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-        }).each(function(d) {
-        	let elem = d3.select(this).property('value');
-        	if (elem == mode) {
-        		d3.select(this).attr("selected", function (d) { return true; });
-        	}
-        });
-
-
-        // @embedding changes @sush 
-		    // the next two chunks 
-		    var dropdown_emb = d3.select("#main_menu")
-		      .insert("select", "svg")
-		      .attr("id", "embedding_dropdown")
-		      .on("change", embedding_change);
+  var mode_list = ['agglomerative', 'kmeans', 'mean_shift'];
+  dropdown_mode.selectAll("option")
+      .data(mode_list)
+    .enter().append("option")
+      .attr("value", function (d) { return d; })
+      .text(function (d) {
+          return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+      }).each(function(d) {
+      	let elem = d3.select(this).property('value');
+      	if (elem == mode) {
+      		d3.select(this).attr("selected", function (d) { return true; });
+      	}
+      });
 
 
-		    var emb_list=['embedding', 'raw_embedding', 'key_embedding']
-			  dropdown_emb.selectAll("option")
-			      .data(emb_list)
-			    .enter().append("option")
-			      .attr("value", function (d) { return d; })
-			      .text(function (d) {
-			          return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-			      }).each(function(d) {
-			      	let elem = d3.select(this).property('value');
-			      	if (elem == mode) {
-			      		d3.select(this).attr("selected", function (d) { return true; });
-			      	}
-			      });
+    // embedding changes
+    // the next two chunks 
+    var dropdown_emb = d3.select("#main_menu")
+      .insert("select", "svg")
+      .attr("id", "embedding_dropdown")
+      .on("change", embedding_change);
+
+
+    var emb_list=['embedding', 'raw_embedding', 'key_embedding']
+	  dropdown_emb.selectAll("option")
+	      .data(emb_list)
+	    .enter().append("option")
+	      .attr("value", function (d) { return d; })
+	      .text(function (d) {
+	          return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+	      }).each(function(d) {
+	      	let elem = d3.select(this).property('value');
+	      	if (elem == mode) {
+	      		d3.select(this).attr("selected", function (d) { return true; });
+	      	}
+	      });
 
 }
 
