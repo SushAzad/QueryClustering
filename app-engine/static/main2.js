@@ -33,44 +33,55 @@ async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
 	//console.log(requestResult.data);
 
 	drawClusterGraph(requestResult.data, mode, 600, 600);
-	let opt = document.getElementById('options');
-	opt.innerHTML = '';
-	if (mode == 'kmeans') {
-		let label = document.createElement('label');
-		label.innerHTML = 'Num of Clusters: ';
-		label.for = 'n_clusters';
-		let input = document.createElement('input');
-		input.id = 'n_clusters';
-		input.name = 'n_clusters';
-		input.type = "number";
-		if (n_clusters) {
-			input.value = n_clusters;
-		}
-		// input.addEventListener("keyup", function(e) {
-		// 	let box = document.getElementById('n_clusters').value;
-		// 	if (e.keyCode === 13) {
-		// 		// Enter key
-		// 		e.preventDefault();
-		// 		console.log(box);
-		// 		fetchAndDraw(mode, box);
-		// 	}
-		// });
-		opt.appendChild(label);
-		opt.appendChild(input);
-	} else if (mode == 'agglomerative') {
+	// let opt = document.getElementById('options');
+	// opt.innerHTML = '';
+	if (mode=='kmeans') {
+		document.getElementById("kmeans_input").style.display = 'block';
+		document.getElementById("agglomerative_input").style.display = 'none';
+	} else if(mode == 'agglomerative') {
+		document.getElementById("kmeans_input").style.display = 'none';
+		document.getElementById("agglomerative_input").style.display = 'block';
+	} else if (mode =='mean_shift') {
+		document.getElementById("kmeans_input").style.display = 'none';
+		document.getElementById("agglomerative_input").style.display = 'none';
+	}
+
+	// if (mode == 'kmeans') {
+		// let label = document.createElement('label');
+		// label.innerHTML = 'Num of Clusters: ';
+		// label.for = 'n_clusters';
+		// let input = document.createElement('input');
+		// input.id = 'n_clusters';
+		// input.name = 'n_clusters';
+		// input.type = "number";
+		// if (n_clusters) {
+		// 	input.value = n_clusters;
+		// }
+		// // input.addEventListener("keyup", function(e) {
+		// // 	let box = document.getElementById('n_clusters').value;
+		// // 	if (e.keyCode === 13) {
+		// // 		// Enter key
+		// // 		e.preventDefault();
+		// // 		console.log(box);
+		// // 		fetchAndDraw(mode, box);
+		// // 	}
+		// // });
+		// opt.appendChild(label);
+		// opt.appendChild(input);
+	// } else if (mode == 'agglomerative') {
 		// dist options
-		let label = document.createElement('label');
-		label.innerHTML = 'Distance: ';
-		label.for = 'dist';
-		let input = document.createElement('input');
-		input.id = 'dist';
-		input.name = 'dist';
-		input.type = "number";
-		input.min = 0;
-		input.step = 'any';
-		if (dist != undefined) {
-			input.value = dist;
-		}
+		// let label = document.createElement('label');
+		// label.innerHTML = 'Distance: ';
+		// label.for = 'dist';
+		// let input = document.createElement('input');
+		// input.id = 'dist';
+		// input.name = 'dist';
+		// input.type = "number";
+		// input.min = 0;
+		// input.step = 'any';
+		// if (dist != undefined) {
+		// 	input.value = dist;
+		// }
 		// input.addEventListener("keyup", function(e) {
 		// 	let box = document.getElementById('dist').value;
 		// 	if (e.keyCode === 13) {
@@ -88,73 +99,52 @@ async function fetchAndDraw(mode, n_clusters, dist, link, embedding) {
 		// 		}
 		// 	}
 		// });
-		opt.appendChild(label);
-		opt.appendChild(input);
+		// opt.appendChild(label);
+		// opt.appendChild(input);
 
 		// link options
-		let label2 = document.createElement('label');
-		label2.innerHTML = 'Link: ';
-		label2.for = 'link';
-		let input2 = document.createElement('select');
-		input2.id = 'link';
-		input2.name = 'link';
+		// let label2 = document.createElement('label');
+		// label2.innerHTML = 'Link: ';
+		// label2.for = 'link';
+		// let input2 = document.createElement('select');
+		// input2.id = 'link';
+		// input2.name = 'link';
 		
-		let options = ['ward', 'complete', 'single', 'average'];
-		for (const val of options) {
-			var option = document.createElement('option');
-			option.value = val;
-			option.text = val;
-			if (link == val) {
-				option.selected = 'true';
-			}
-			input2.appendChild(option);
-		}
+		// let options = ['ward', 'complete', 'single', 'average'];
+		// for (const val of options) {
+		// 	var option = document.createElement('option');
+		// 	option.value = val;
+		// 	option.text = val;
+		// 	if (link == val) {
+		// 		option.selected = 'true';
+		// 	}
+		// 	input2.appendChild(option);
+		// }
 
-		input2.onchange = function () {
-			let param = document.getElementById('link').value;
-			//let param = elem.options[elem.selectedIndex].text;
-			//console.log(param, dist);
-			let dist = document.getElementById('dist').value;
-			//sush @embedding changes here
-			if (dist != undefined) {
-				fetchAndDraw(mode, undefined, dist, param, embedding);
-			} else {
-				fetchAndDraw(mode, undefined, undefined, param, embedding);
-			}
-		}
-		opt.appendChild(label2);
-		opt.appendChild(input2);
+		// input2.onchange = function () {
+		// 	let param = document.getElementById('link').value;
+		// 	//let param = elem.options[elem.selectedIndex].text;
+		// 	//console.log(param, dist);
+		// 	let dist = document.getElementById('dist').value;
+		// 	//sush @embedding changes here
+		// 	if (dist != undefined) {
+		// 		fetchAndDraw(mode, undefined, dist, param, embedding);
+		// 	} else {
+		// 		fetchAndDraw(mode, undefined, undefined, param, embedding);
+		// 	}
+		// }
+		// opt.appendChild(label2);
+		// opt.appendChild(input2);
 
+		
+		// let button = document.createElement('input');
+		// button.setAttribute("type", "submit");
+		// button.setAttribute("id", "submit_button");
+		// button.setAttribute("value", "Submit");
+		// opt.appendChild(button);
 
-		let button = document.createElement('input');
-		button.setAttribute("type", "submit");
-		button.setAttribute("id", "submit_button");
-		button.setAttribute("value", "Submit");
-		opt.appendChild(button);
-
-		button.addEventListener("click", function(e) {
-			if (mode == 'agglomerative') {
-				let box = document.getElementById('dist').value;
-				
-				// e.preventDefault();
-				let link = document.getElementById('link').value;
-				//console.log(box, link);
-
-				if (link != undefined) {
-					fetchAndDraw(mode, undefined, box, link, embedding);
-				} else {
-					//fetchAndDraw(mode, undefined, box);
-					fetchAndDraw(mode, undefined, box, undefined, embedding);
-				}
-				
-			} else if(mode == 'kmeans') { 
-				let box = document.getElementById('n_clusters').value;
-				console.log(box);
-				fetchAndDraw(mode, box, undefined, undefined, embedding);
-			}
-			
-		});
-	}
+		// }
+	
 }
 
 function drawClusterGraph(data, mode, fullWidth, fullHeight) {
@@ -203,6 +193,8 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 		//console.log(data[questionid]);
 		console.log("Clusters for Question " + questionid);
 		updateNodes(data[questionid]);
+
+
 	};
 
 	var dropdownModeChange = function() {
@@ -215,7 +207,21 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 		
 		console.log(mode);
 
-		fetchAndDraw(mode, undefined, undefined, undefined, emb);
+		if (mode=='kmeans') {
+			document.getElementById("kmeans_input").style.display = 'block';
+			document.getElementById("agglomerative_input").style.display = 'none';
+		} else if(mode == 'agglomerative') {
+			document.getElementById("kmeans_input").style.display = 'none';
+			document.getElementById("agglomerative_input").style.display = 'block';
+		} else if (mode =='mean_shift') {
+			document.getElementById("kmeans_input").style.display = 'none';
+			document.getElementById("agglomerative_input").style.display = 'none';
+		}
+		
+
+		// fetchAndDraw(mode, undefined, undefined, undefined, emb);
+
+
 		//console.log(data[questionid]);
 		//console.log("Clusters for Question " + questionid);
 		//updateNodes(data[questionid]);
@@ -230,8 +236,7 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 		var mode = d3.select('#mode_dropdown').property('value');
 		console.log(emb, mode);
 
-		// fetchAndDraw(mode);
-		fetchAndDraw(mode, undefined, undefined, undefined, emb);
+		// fetchAndDraw(mode, undefined, undefined, undefined, emb);
 
 	}
 
@@ -450,5 +455,34 @@ function drawClusterGraph(data, mode, fullWidth, fullHeight) {
 	      });
 
 }
+
+		let button = document.getElementById('submit_button');
+
+		button.addEventListener("click", function(e) {
+
+			var mode = d3.select('#mode_dropdown').property('value');
+			var emb = d3.select('#embedding_dropdown').property('value');
+
+			if (mode == 'agglomerative') {
+				let box = document.getElementById('dist').value;
+
+				// e.preventDefault();
+				let link = document.getElementById('link').value;
+				//console.log(box, link);
+
+				if (link != undefined) {
+					fetchAndDraw(mode, undefined, box, link, emb);
+				} else {
+					//fetchAndDraw(mode, undefined, box);
+					fetchAndDraw(mode, undefined, box, undefined, emb);
+				}
+				
+			} else if(mode == 'kmeans') { 
+				let box = document.getElementById('n_clusters').value;
+				console.log(box);
+				fetchAndDraw(mode, box, undefined, undefined, emb);
+			}
+			
+		});
 
 document.onload = init();

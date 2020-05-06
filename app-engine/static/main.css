@@ -8,12 +8,15 @@ svg {
 }
 
 #options {
-	margin-top: 10px;
+	margin: 8px 0px;
 }
-select {
+
+select,
+#submit_button {
 	margin: 0px 15px 0px 0px ;
 	height: 25px;
 }
+
 #content {
 	margin: 30px;
 }
